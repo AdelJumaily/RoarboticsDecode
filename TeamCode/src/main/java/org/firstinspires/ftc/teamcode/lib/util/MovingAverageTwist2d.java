@@ -23,6 +23,11 @@ public class MovingAverageTwist2d {
     }
 
     public synchronized Twist2d getAverage() {
+        double size = getSize();
+        if (size == 0) {
+            return Twist2d.identity();
+        }
+        
         double x = 0.0, y = 0.0, t = 0.0;
 
         for (Twist2d twist : twists) {
@@ -31,7 +36,6 @@ public class MovingAverageTwist2d {
             t += twist.dtheta;
         }
 
-        double size = getSize();
         return new Twist2d(x / size, y / size, t / size);
     }
 

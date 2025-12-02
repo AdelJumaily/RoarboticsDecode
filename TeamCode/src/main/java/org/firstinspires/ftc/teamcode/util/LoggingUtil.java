@@ -17,7 +17,11 @@ public class LoggingUtil {
     private static final long LOG_QUOTA = 25 * 1024 * 1024; // 25MB log quota for now
 
     private static void buildLogList(List<File> logFiles, File dir) {
-        for (File file : dir.listFiles()) {
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File file : files) {
             if (file.isDirectory()) {
                 buildLogList(logFiles, file);
             } else {

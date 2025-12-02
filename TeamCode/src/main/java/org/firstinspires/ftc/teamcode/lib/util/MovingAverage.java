@@ -21,6 +21,10 @@ public class MovingAverage {
     }
 
     public double getAverage() {
+        if (numbers.size() == 0) {
+            return 0.0;
+        }
+        
         double total = 0;
 
         for (double number : numbers) {
