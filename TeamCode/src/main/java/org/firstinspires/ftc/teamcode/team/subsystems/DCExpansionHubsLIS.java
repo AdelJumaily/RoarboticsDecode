@@ -4,18 +4,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.drivers.RevMotor;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubEx;
 import org.firstinspires.ftc.teamcode.revextension2.RevBulkData;
-import org.firstinspires.ftc.teamcode.team.ITDAutoRobotLACH;
+import org.firstinspires.ftc.teamcode.team.DCAutoRobotLIS;
 import org.firstinspires.ftc.teamcode.team.states.IState;
 
 public class DCExpansionHubsLIS implements ISubsystem {
 
-    private ITDAutoRobotLACH robot;
+    private DCAutoRobotLIS robot;
     private ExpansionHubEx masterHub;
     private ExpansionHubEx slaveHub;
     private RevBulkData masterData;
     private RevBulkData slaveData;
 
-    public DCExpansionHubsLIS(ITDAutoRobotLACH robot, ExpansionHubEx masterHub, ExpansionHubEx slaveHub) {
+    public DCExpansionHubsLIS(DCAutoRobotLIS robot, ExpansionHubEx masterHub, ExpansionHubEx slaveHub) {
         setRobot(robot);
         setMasterHub(masterHub);
         setSlaveHub(slaveHub);
@@ -148,11 +148,11 @@ public class DCExpansionHubsLIS implements ISubsystem {
         this.slaveData = slaveData;
     }
 
-    public ITDAutoRobotLACH getRobot() {
+    public DCAutoRobotLIS getRobot() {
         return robot;
     }
 
-    public void setRobot(ITDAutoRobotLACH robot) {
+    public void setRobot(DCAutoRobotLIS robot) {
         this.robot = robot;
     }
 

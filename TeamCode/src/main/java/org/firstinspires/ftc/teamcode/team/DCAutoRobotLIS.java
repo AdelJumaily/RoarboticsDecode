@@ -10,11 +10,10 @@ import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubMotor;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubServo;
 import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.team.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.ExpansionHubs;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCIntakeSubsystem;
-import org.firstinspires.ftc.teamcode.team.subsystems.LiftSubsystem;
-import org.firstinspires.ftc.teamcode.team.subsystems.DCOuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCLiftSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCShooterSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 
 
@@ -41,9 +40,8 @@ public class DCAutoRobotLIS {
     private ExpansionHubs expansionHubs;
     private RobotStateEstimator robotStateEstimator;
     private Drive drive;
-    private LiftSubsystem liftSubsystem;
-    private DCOuttakeSubsystem DCouttakeSubsystem;
-    private DroneSubsystem droneSubsystem;
+    private DCLiftSubsystem DCliftSubsystem;
+    private DCShooterSubsystem DCshooterSubsystem;
     private DCIntakeSubsystem DCintakeSubsystem;
     private RevMotor[] motors;
     private RevServo[] servos;
@@ -58,18 +56,17 @@ public class DCAutoRobotLIS {
         setMotors(new RevMotor[] {
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), false, false, false, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION()),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Outtake")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Shooter")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
         });
 
-        setServos(new RevServo[] {
-                new RevServo((ExpansionHubServo)(hardwareMap.get("Outtake"))),
-                new RevServo((ExpansionHubServo)(hardwareMap.get("Drone")))
-        });
+//        setServos(new RevServo[] {
+//                new RevServo((ExpansionHubServo)(hardwareMap.get("Outtake"))),
+//                new RevServo((ExpansionHubServo)(hardwareMap.get("Drone")))
+//        });
 
-        setLiftSubsystem(new LiftSubsystem(getMotors()[0]));
+        setDCLiftSubsystem(new DCLiftSubsystem(getMotors()[0]));
         setDCIntakeSubsystem(new DCIntakeSubsystem(getMotors()[1]));
-        setDCOuttakeSubsystem(new DCOuttakeSubsystem(getMotors()[2]));
-        setDroneSubsystem(new DroneSubsystem(getServos()[1]));
+        setDCShooterSubsystem(new DCShooterSubsystem(getMotors()[2]));
         setMatchRuntime(new TimeProfiler(false));
     }
     public RevMotor[] getMotors() {
@@ -112,12 +109,12 @@ public class DCAutoRobotLIS {
         this.drive = drive;
     }
 
-    public LiftSubsystem getLiftSubsystem() {
-        return liftSubsystem;
+    public DCLiftSubsystem getDCLiftSubsystem() {
+        return DCliftSubsystem;
     }
 
-    public void setLiftSubsystem(LiftSubsystem liftSubsystem){
-        this.liftSubsystem = liftSubsystem;
+    public void setDCLiftSubsystem(DCLiftSubsystem DCliftSubsystem){
+        this.DCliftSubsystem = DCliftSubsystem;
     }
 
     public DCIntakeSubsystem getDCIntakeSubsystem() {
@@ -128,20 +125,12 @@ public class DCAutoRobotLIS {
         this.DCintakeSubsystem = intakeSubsystem;
     }
 
-    public DCOuttakeSubsystem getOuttakeSubsystem() {
-        return DCouttakeSubsystem;
+    public DCShooterSubsystem getDCShooterSubsystem() {
+        return DCshooterSubsystem;
     }
 
-    public void setDCOuttakeSubsystem(DCOuttakeSubsystem DCouttakeSubsystem){
-        this.DCouttakeSubsystem = DCouttakeSubsystem;
-    }
-
-    public DroneSubsystem getDroneSubsystem() {
-        return droneSubsystem;
-    }
-
-    public void setDroneSubsystem(DroneSubsystem droneSubsystem){
-        this.droneSubsystem = droneSubsystem;
+    public void setDCShooterSubsystem(DCShooterSubsystem DCshooterSubsystem){
+        this.DCshooterSubsystem = DCshooterSubsystem;
     }
 
     public TimeProfiler getMatchRuntime() {

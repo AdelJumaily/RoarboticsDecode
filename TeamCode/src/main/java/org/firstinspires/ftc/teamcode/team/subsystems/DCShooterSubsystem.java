@@ -13,7 +13,7 @@ public class DCShooterSubsystem implements ISubsystem<DCShooterStateMachine, DCS
         setShooterWheels(ShooterMotor);
     }
 
-    @Overrid
+    @Override
     public DCShooterStateMachine getStateMachine() {
         return DCShooterStateMachine;
     }
