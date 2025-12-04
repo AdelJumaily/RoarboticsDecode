@@ -26,7 +26,6 @@ public class RedBack extends LinearOpMode { //updated
     private static final double length = 16;
 
 
-
     static final Vector2d path0 = new Vector2d(24,-3);
     static final Vector2d path1 = new Vector2d(0, 0);
     static final Vector2d path2 = new Vector2d(38,13);
