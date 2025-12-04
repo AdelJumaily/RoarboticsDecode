@@ -21,9 +21,12 @@ import org.firstinspires.ftc.teamcode.team.states.IntakeStateMachine;
  *          Left-Bumper                 -> Decrease robot speed .7x
  *          Right-Bumper                -> Normal robot speed 1x
  *      Intake:
- *          Left_trigger                -> Turn arm to "PickUp" position
- *          Right_trigger               -> Turn arm to "Drop" position
- *          X-Button (pressed)          -> Turn arm to Starting position
+ *          Left_trigger                -> Spins to Intake
+ *          Right_trigger               -> Spins to Outtake
+ *
+ *      Shooter:
+ *          Left_trigger                -> Spins to Intake
+ *          Right_trigger               -> Spins to Outtake
  *      Lift:
  *          Y-Button                    -> Extend lift to "Out" position
  *          B-Button                    -> Extend lift to "In" position
