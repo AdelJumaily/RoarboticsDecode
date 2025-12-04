@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.team.auto.DCBaseLIS;
 import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.IntakeStateMachine;
 
 
 /*
@@ -17,20 +16,20 @@ import org.firstinspires.ftc.teamcode.team.states.IntakeStateMachine;
  * The controls for this robot are:
  *  User 1:
  *      Drive:
- *          Left & Right joysticks      -> Mecanum drive
- *          Left-Bumper                 -> Decrease robot speed .7x
- *          Right-Bumper                -> Normal robot speed 1x
+ *          Left & Right joysticks          -> Mecanum drive
+ *          Left-Bumper                     -> Decrease robot speed .7x
+ *          Right-Bumper                    -> Normal robot speed 1x
  *      Intake:
- *          Left_trigger                -> Spins to Intake
- *          Right_trigger               -> Spins to Outtake
+ *          Right_trigger                   -> Spins to Intake
+ *          Left_trigger                    -> Idle
  *
  *      Shooter:
- *          Left_trigger                -> Spins to Intake
- *          Right_trigger               -> Spins to Outtake
+ *          A-Button                        -> Spins to Shoot
+ *          B-Button                        -> Idle
+ *
  *      Lift:
- *          Y-Button                    -> Extend lift to "Out" position
- *          B-Button                    -> Extend lift to "In" position
- *          A-Button                    -> Retract lift to starting position
+ *          Dpad-Down                       -> Extend lift to "Out" position
+ *          Dpad-Up                         -> Extend lift to "Out" position
  *
  *
  *  User 2:
@@ -86,11 +85,20 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
 
         //Intake
         //spins the intake to intake a pixel
-        if (getEnhancedGamepad1().getLeft_trigger() > 0) {
+        if (getEnhancedGamepad1().getRight_trigger() > 0) {
             drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
         }
-        if(getEnhancedGamepad1().isDpadUpJustPressed()){
-            drive.robot.getDCLiftSubsystem().extend(LiftIn);
+        if (getEnhancedGamepad1().getLeft_trigger() > 0) {
+            drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+        }
+
+        //Shooter
+        //spins the intake to intake a pixel
+        if (getEnhancedGamepad1().getRight_trigger() > 0) {
+            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+        }
+        if (getEnhancedGamepad1().getLeft_trigger() > 0) {
+            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
         }
 
 
@@ -105,7 +113,6 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
         telemetry.addData("Intake State: ", drive.robot.getDCIntakeSubsystem().getStateMachine().getState());
         telemetry.addData("Shooter State: ", drive.robot.getDCShooterSubsystem().getStateMachine().getState());
