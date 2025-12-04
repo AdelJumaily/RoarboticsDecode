@@ -10,10 +10,10 @@ import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubMotor;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubServo;
 import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.team.subsystems.ExpansionHubs;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCLiftSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCShooterSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCExpansionHubsLIS;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 
 
@@ -35,14 +35,15 @@ import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 
  */
 public class DCAutoRobotLIS {
-    //private  RevBlinkinLedDriver lights;
     private TimeProfiler matchRuntime;
-    private ExpansionHubs expansionHubs;
     private RobotStateEstimator robotStateEstimator;
     private Drive drive;
+    private DCExpansionHubsLIS dcExpansionHubsLIS;
     private DCLiftSubsystem DCliftSubsystem;
     private DCShooterSubsystem DCshooterSubsystem;
     private DCIntakeSubsystem DCintakeSubsystem;
+
+
     private RevMotor[] motors;
     private RevServo[] servos;
 
@@ -85,12 +86,12 @@ public class DCAutoRobotLIS {
         this.servos = servos;
     }
 
-    public ExpansionHubs getExpansionHubs() {
-        return expansionHubs;
+    public DCExpansionHubsLIS getExpansionHubs() {
+        return dcExpansionHubsLIS;
     }
 
-    public void setExpansionHubs(ExpansionHubs expansionHubs) {
-        this.expansionHubs = expansionHubs;
+    public void setDCExpansionHubsLIS(DCExpansionHubsLIS dExpansionHubsLIS) {
+        this.dcExpansionHubsLIS = dExpansionHubsLIS;
     }
 
     public RobotStateEstimator getRobotStateEstimator() {
