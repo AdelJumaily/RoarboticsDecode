@@ -22,14 +22,18 @@ public class RedBack extends LinearOpMode { //updated
     private static double dt;
     private static TimeProfiler updateRuntime;
 
-    private static final double width = 16.375;
-    private static final double length = 15.125;
+    private static final double width = 16.25;
+    private static final double length = 16;
 
 
 
-    static final Vector2d path0 = new Vector2d(36 ,0);
-    static final Vector2d path1 = new Vector2d(55.7, -55.5);
-    static final Vector2d path2 = new Vector2d(63.9,-52); //observation zone
+    static final Vector2d path0 = new Vector2d(24,-3);
+    static final Vector2d path1 = new Vector2d(0, 0);
+    static final Vector2d path2 = new Vector2d(38,13);
+    static final Vector2d path3 = new Vector2d(58,13);
+    static final Vector2d path4 = new Vector2d(46.5,46.25);
+    static final Vector2d path5 = new Vector2d(0,0);
+
 
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -38,11 +42,18 @@ public class RedBack extends LinearOpMode { //updated
 
     enum State {
         WAIT0,
+        MTSP, //move to shooting position
+        Shoot1, //shoots the 3 balls 1st time
+        MTBLP, //move to Ball left position
+        MTBRP, //move to Ball right position and
+        Shoot2, //shoots the 3 balls 2nd time
+        End, //
+
     }
 
     RedBack.State currentState = RedBack.State.WAIT0;
 
-    Pose2d startPoseRL = new Pose2d(64.5, -32.1);
+    Pose2d startPoseRL = new Pose2d(51.5, 51.25);
     //lift test needs to be done (values are estimated/inaccurate)
 
 
@@ -54,24 +65,34 @@ public class RedBack extends LinearOpMode { //updated
         drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
         drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
 
-        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
-                .lineTo(path0)
+        TrajectorySequence P4 = drive.trajectorySequenceBuilder(startPoseRL)
+                .lineTo(path4)
+                .turn(35)
                 .build();
 
-        TrajectorySequence P1 = drive.trajectorySequenceBuilder(P0.end())
-                .lineTo(path1)
+        TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
+                .lineTo(path5)
                 .build();
 
-        TrajectorySequence P2 = drive.trajectorySequenceBuilder(P1.end())
+        TrajectorySequence P2 = drive.trajectorySequenceBuilder(P5.end())
                 .lineTo(path2)
                 .build();
 
-//        TrajectorySequence P3 = drive.trajectorySequenceBuilder(P2.end())
-//                .lineTo(path3)
-//                .build();
-/*
+       TrajectorySequence P3 = drive.trajectorySequenceBuilder(P2.end())
+                .lineTo(path3)
+                .build();
+
+        TrajectorySequence P1 = drive.trajectorySequenceBuilder(P3.end())
+                .lineTo(path1)
+                .build();
+
+        TrajectorySequence P0 = drive.trajectorySequenceBuilder(P1.end())
+                .lineTo(path0)
+                .build();
+
+      /*
         TrajectorySequence P4 = drive.trajectorySequenceBuilder(P3.end())
-                .lineTo(path4)
+               .lineTo(path4)
                 .build();
 
         TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
@@ -84,6 +105,7 @@ public class RedBack extends LinearOpMode { //updated
         */
         //drive.getITDExpansionHubsLACH().update(getDt());
         drive.robot.getDCIntakeSubsystem().update(getDt());
+        drive.robot.getDCShooterSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
 
 
@@ -108,17 +130,72 @@ public class RedBack extends LinearOpMode { //updated
             switch (currentState) {
 
                 case WAIT0:
+                    if (waitTimer.milliseconds() >= 1000)
+                        currentState = State.MTSP;
+                    waitTimer.reset();
                     telemetry.addLine("in the wait0 state");
                     break;
 
+                case MTSP:
+                    drive.followTrajectorySequenceAsync(P1);
+                    if (!drive.isBusy()) {
+                        currentState = State.Shoot1;
+                    }
+
+                case Shoot1:
+                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+                    waitTimer.reset();
+                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
+                        if (waitTimer.milliseconds() >= 2000){
+                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+                        }
+                    }
+                    if(!drive.isBusy()) {
+                        currentState = State.MTBLP;
+                    }
+
+
+
+                case MTBLP:
+                    drive.followTrajectorySequenceAsync(P2);
+                    if(!drive.isBusy()){
+                        currentState = State.MTBRP;
+                    }
+
+
+                case MTBRP:
+                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
+                    drive.followTrajectorySequenceAsync(P3);
+                    if(!drive.isBusy()) {
+                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+                        drive.followTrajectorySequenceAsync(P1);
+                    }
+                case Shoot2:
+                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+                    waitTimer.reset();
+                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
+                        if (waitTimer.milliseconds() >= 2000){
+                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+                        }
+                    }
+                    if(!drive.isBusy()) {
+                        currentState = State.End;
+                    }
+
+                case End:
+                    drive.followTrajectorySequenceAsync(P0);
+                    if(!drive.isBusy()) {
+                        break;
+                    }
 
             }
+
 
             drive.update();
 
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
             //drive.getDCExpansionHubsLIS().update(getDt());
-            drive.robot.getDCLiftSubsystem().update(getDt());
+            //drive.robot.getDCLiftSubsystem().update(getDt());
             drive.robot.getDCIntakeSubsystem().update(getDt());
             drive.robot.getDCShooterSubsystem().update(getDt());
 
