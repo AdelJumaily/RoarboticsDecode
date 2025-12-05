@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
-import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
@@ -37,10 +36,11 @@ public class RedFront extends LinearOpMode { //updated
 
 
 
-
-    static final Vector2d path0 = new Vector2d(36 ,0); // MTSP
-    static final Vector2d path1 = new Vector2d(55.7, -55.5); // Moves to Ball left position
-    static final Vector2d path2 = new Vector2d(63.9,-52); //Moves to Ball right position
+    static final Vector2d path0 = new Vector2d(24,48);
+    static final Vector2d path1 = new Vector2d(36, 48);
+    static final Vector2d path2 = new Vector2d(12,-12);
+    static final Vector2d path3 = new Vector2d(60,12);
+    static final Vector2d path4 = new Vector2d(36,-12);
 
 
 
@@ -66,7 +66,7 @@ public class RedFront extends LinearOpMode { //updated
     RedFront.State currentState = RedFront.State.WAIT0;
 
 
-    Pose2d startPoseRL = new Pose2d (64.5, -32.1);
+    Pose2d startPoseRL = new Pose2d (24 - (length/2), -72 + (width/2));
     //lift test needs to be done (values are estimated/inaccurate)
 
 
@@ -95,6 +95,15 @@ public class RedFront extends LinearOpMode { //updated
                 .lineTo(path2)
                 .build();
 
+        TrajectorySequence P3 = drive.trajectorySequenceBuilder(P2.end())
+                .lineTo(path3)
+                .build();
+
+        TrajectorySequence P4 = drive.trajectorySequenceBuilder(P3.end())
+                .lineTo(path4)
+                .turn(35)
+                .build();
+
 
         //drive.getITDExpansionHubsLACH().update(getDt());
         drive.robot.getDCIntakeSubsystem().update(getDt());
@@ -120,7 +129,7 @@ public class RedFront extends LinearOpMode { //updated
         if (isStopRequested()) return;
 
 
-        currentState = RedFront.State.WAIT0;
+        currentState = State.WAIT0;
 
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -133,19 +142,22 @@ public class RedFront extends LinearOpMode { //updated
 
 
                 case WAIT0:
-                    telemetry.addLine("in the wait0 state");
+                    if (waitTimer.milliseconds() >= 1000)
+                        currentState = RedFront.State.MTSP;
                     waitTimer.reset();
-                    if (waitTimer.milliseconds() >= 2000) { // 2 seconds passed
-                        currentState = State.MTSP;
-                    }
+                    telemetry.addLine("in the wait0 state");
                     break;
 
+
                 case MTSP:
-                    drive.followTrajectorySequenceAsync(P0);                    if (!drive.isBusy()) {
-                        telemetry.addLine("in the MTSP state");
-                        currentState = State.SHOOT1;
+                    drive.followTrajectorySequenceAsync(P0);
+                    if (waitTimer.milliseconds() >= 500) {
+                        drive.followTrajectorySequenceAsync(P1);
                     }
-                    break;
+                    if (!drive.isBusy()) {
+                        currentState = RedFront.State.SHOOT1;
+                    }
+
 
                 case SHOOT1:
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
@@ -153,27 +165,34 @@ public class RedFront extends LinearOpMode { //updated
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
                         if (waitTimer.milliseconds() >= 2000){
                             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+                            waitTimer.reset();
                         }
                     }
                     if(!drive.isBusy()) {
-                        currentState = State.MTBLP;
+                        currentState = RedFront.State.MTBLP;
                     }
 
+
+
+
+
+
                 case MTBLP:
+                    drive.followTrajectorySequenceAsync(P2);
+                    if (waitTimer.milliseconds() >= 200) {
+                        drive.followTrajectorySequenceAsync(P3);
+                    }
+                    if(!drive.isBusy()){
+                        currentState = State.MTBRP;
+                    }
+
+                case MTBRP:
                     drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
                     drive.followTrajectorySequenceAsync(P1);
                     if(!drive.isBusy()) {
                         drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
                         drive.followTrajectorySequenceAsync(P2);
-                        currentState = State.MTBRP;
                     }
-
-                case MTBRP:
-                    drive.followTrajectorySequenceAsync(P0);
-                    if(!drive.isBusy()) {
-                        currentState = State.SHOOT2;
-                    }
-
                 case SHOOT2:
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
                     waitTimer.reset();
@@ -186,11 +205,14 @@ public class RedFront extends LinearOpMode { //updated
                         currentState = State.END;
                     }
 
+
                 case END:
-                    drive.followTrajectorySequenceAsync(P1);
+                    drive.followTrajectorySequenceAsync(P4);
                     if(!drive.isBusy()) {
                         break;
                     }
+
+
             }
 
 
