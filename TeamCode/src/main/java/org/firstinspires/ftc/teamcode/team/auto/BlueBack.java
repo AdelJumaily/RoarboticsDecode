@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 
 
 
-@Autonomous(name = "Red back", group = "Pixel")
+@Autonomous(name = "Blue back", group = "Pixel")
 public class BlueBack extends LinearOpMode { //updated
 
 
@@ -34,16 +34,8 @@ public class BlueBack extends LinearOpMode { //updated
     private static TimeProfiler updateRuntime;
 
 
-
-
     private static final double width = 16.25;
     private static final double length = 16;
-
-
-
-
-
-
 
 
     static final Vector2d path0 = new Vector2d(-24,-3);
@@ -52,17 +44,6 @@ public class BlueBack extends LinearOpMode { //updated
     static final Vector2d path3 = new Vector2d(-58,13);
     static final Vector2d path4 = new Vector2d(-46.5,46.25);
     static final Vector2d path5 = new Vector2d(-12,54);
-
-
-
-
-
-
-
-
-
-
-
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
