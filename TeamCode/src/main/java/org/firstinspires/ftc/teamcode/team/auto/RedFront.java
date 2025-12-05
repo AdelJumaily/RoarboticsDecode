@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
-import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
@@ -18,8 +17,9 @@ import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 
 
 
-@Autonomous(name = "Red back", group = "Pixel")
-public class RedBack extends LinearOpMode { //updated
+@Autonomous(name = "Red front", group = "Pixel")
+
+public class RedFront extends LinearOpMode { //updated
 
 
 
@@ -35,14 +35,12 @@ public class RedBack extends LinearOpMode { //updated
 
 
 
-    static final Vector2d path0 = new Vector2d(24,-3);
-    static final Vector2d path1 = new Vector2d(12, 54);
-    static final Vector2d path2 = new Vector2d(38,13);
-    static final Vector2d path3 = new Vector2d(58,13);
-    static final Vector2d path4 = new Vector2d(46.5,46.25);
-    static final Vector2d path5 = new Vector2d(12,54);
 
-
+    static final Vector2d path0 = new Vector2d(24,48);
+    static final Vector2d path1 = new Vector2d(36, 48);
+    static final Vector2d path2 = new Vector2d(12,-12);
+    static final Vector2d path3 = new Vector2d(60,12);
+    static final Vector2d path4 = new Vector2d(36,-12);
 
 
 
@@ -53,23 +51,22 @@ public class RedBack extends LinearOpMode { //updated
 
 
 
+    // This defines all the states the robot can be in during auto
     enum State {
         WAIT0,
-        MTSP, //move to shooting position
-        Shoot1, //shoots the 3 balls 1st time
-        MTBLP, //move to Ball left position
-        MTBRP, //move to Ball right position and
-        Shoot2, //shoots the 3 balls 2nd time
-        End, //
-
-
+        MTSP, // Moves to shooting position
+        SHOOT1, // Shoots 3 balls
+        MTBLP, // Moves the ball to left position
+        MTBRP, // Moves the ball to right position
+        SHOOT2, // Shoots 3 balls
+        END
     }
 
 
-    RedBack.State currentState = RedBack.State.WAIT0;
+    RedFront.State currentState = RedFront.State.WAIT0;
 
 
-    Pose2d startPoseRL = new Pose2d(51.5, 51.25);
+    Pose2d startPoseRL = new Pose2d (24 - (length/2), -72 + (width/2));
     //lift test needs to be done (values are estimated/inaccurate)
 
 
@@ -83,57 +80,33 @@ public class RedBack extends LinearOpMode { //updated
         drive.setPoseEstimate(startPoseRL);
         drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
         drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
-
-
-        TrajectorySequence P4 = drive.trajectorySequenceBuilder(startPoseRL)
-                .lineTo(path4)
-                .turn(-35)
+        // tells the robot where it could go does not actually move the robot
+        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
+                .lineTo(path0) // MTSP
                 .build();
 
 
-        TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
-                .lineTo(path5)
+        TrajectorySequence P1 = drive.trajectorySequenceBuilder(P0.end())
+                .lineTo(path1)
                 .build();
 
 
-        TrajectorySequence P2 = drive.trajectorySequenceBuilder(P5.end())
+        TrajectorySequence P2 = drive.trajectorySequenceBuilder(P1.end())
                 .lineTo(path2)
                 .build();
-
 
         TrajectorySequence P3 = drive.trajectorySequenceBuilder(P2.end())
                 .lineTo(path3)
                 .build();
 
-
-        TrajectorySequence P1 = drive.trajectorySequenceBuilder(P3.end())
-                .lineTo(path1)
+        TrajectorySequence P4 = drive.trajectorySequenceBuilder(P3.end())
+                .lineTo(path4)
+                .turn(35)
                 .build();
 
 
-        TrajectorySequence P0 = drive.trajectorySequenceBuilder(P1.end())
-                .lineTo(path0)
-                .build();
-
-
-     /*
-       TrajectorySequence P4 = drive.trajectorySequenceBuilder(P3.end())
-              .lineTo(path4)
-               .build();
-
-
-       TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
-               .lineTo(path5)
-               .build();
-
-
-       TrajectorySequence P6 = drive.trajectorySequenceBuilder(P5.end())
-               .lineTo(path6)
-               .build();
-       */
         //drive.getITDExpansionHubsLACH().update(getDt());
         drive.robot.getDCIntakeSubsystem().update(getDt());
-        drive.robot.getDCShooterSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
 
 
@@ -156,7 +129,7 @@ public class RedBack extends LinearOpMode { //updated
         if (isStopRequested()) return;
 
 
-        currentState = RedBack.State.WAIT0;
+        currentState = State.WAIT0;
 
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -170,29 +143,33 @@ public class RedBack extends LinearOpMode { //updated
 
                 case WAIT0:
                     if (waitTimer.milliseconds() >= 1000)
-                        currentState = State.MTSP;
+                        currentState = RedFront.State.MTSP;
                     waitTimer.reset();
                     telemetry.addLine("in the wait0 state");
                     break;
 
 
                 case MTSP:
-                    drive.followTrajectorySequenceAsync(P1);
+                    drive.followTrajectorySequenceAsync(P0);
+                    if (waitTimer.milliseconds() >= 500) {
+                        drive.followTrajectorySequenceAsync(P1);
+                    }
                     if (!drive.isBusy()) {
-                        currentState = State.Shoot1;
+                        currentState = RedFront.State.SHOOT1;
                     }
 
 
-                case Shoot1:
+                case SHOOT1:
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
                     waitTimer.reset();
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
                         if (waitTimer.milliseconds() >= 2000){
                             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+                            waitTimer.reset();
                         }
                     }
                     if(!drive.isBusy()) {
-                        currentState = State.MTBLP;
+                        currentState = RedFront.State.MTBLP;
                     }
 
 
@@ -202,21 +179,21 @@ public class RedBack extends LinearOpMode { //updated
 
                 case MTBLP:
                     drive.followTrajectorySequenceAsync(P2);
+                    if (waitTimer.milliseconds() >= 200) {
+                        drive.followTrajectorySequenceAsync(P3);
+                    }
                     if(!drive.isBusy()){
                         currentState = State.MTBRP;
                     }
 
-
-
-
                 case MTBRP:
                     drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
-                    drive.followTrajectorySequenceAsync(P3);
+                    drive.followTrajectorySequenceAsync(P1);
                     if(!drive.isBusy()) {
                         drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
-                        drive.followTrajectorySequenceAsync(P1);
+                        drive.followTrajectorySequenceAsync(P2);
                     }
-                case Shoot2:
+                case SHOOT2:
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
                     waitTimer.reset();
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
@@ -225,12 +202,12 @@ public class RedBack extends LinearOpMode { //updated
                         }
                     }
                     if(!drive.isBusy()) {
-                        currentState = State.End;
+                        currentState = State.END;
                     }
 
 
-                case End:
-                    drive.followTrajectorySequenceAsync(P0);
+                case END:
+                    drive.followTrajectorySequenceAsync(P4);
                     if(!drive.isBusy()) {
                         break;
                     }
@@ -239,14 +216,12 @@ public class RedBack extends LinearOpMode { //updated
             }
 
 
-
-
             drive.update();
 
 
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
             //drive.getDCExpansionHubsLIS().update(getDt());
-            //drive.robot.getDCLiftSubsystem().update(getDt());
+            drive.robot.getDCLiftSubsystem().update(getDt());
             drive.robot.getDCIntakeSubsystem().update(getDt());
             drive.robot.getDCShooterSubsystem().update(getDt());
 
