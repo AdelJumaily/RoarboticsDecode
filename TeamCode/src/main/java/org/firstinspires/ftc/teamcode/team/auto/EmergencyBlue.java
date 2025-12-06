@@ -256,7 +256,7 @@ public class EmergencyBlue extends LinearOpMode { //updated
 
 
 
-            //The following code ensure state machine updates i.e. parallel execution with drivetrain
+            //The following code ensure state machine updates i.e. parallel execution with drivetrain..
             drive.getExpansionHubs().update(getDt());
             //drive.robot.getDCLiftSubsystem().update(getDt());
 //            drive.robot.getDCIntakeSubsystem().update(getDt());

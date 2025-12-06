@@ -186,7 +186,7 @@ public class EmergencyRed extends LinearOpMode { //updated
                     break;
 
 
-//                case Shoot1:
+//                case Shoot1:..
 //                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
 //                    waitTimer.reset();
 //                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
