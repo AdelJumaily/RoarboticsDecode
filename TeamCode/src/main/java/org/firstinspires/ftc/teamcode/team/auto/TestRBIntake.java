@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.team.subsystems.DCExpansionHubsLIS;
 
 
 @Autonomous(name = "Red back TEST", group = "Pixel")
-public class TestRBIntake extends LinearOpMode { //updated
+public class TestRBIntake extends LinearOpMode { //updated.
 
 
 
