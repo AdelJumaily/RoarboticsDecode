@@ -36,11 +36,11 @@ public class TestRBIntake extends LinearOpMode { //updated
 
 
     public static double DISTANCE = 5;
-    static final Vector2d path0 = new Vector2d(-46,46); //gets ready to shoot artifacts
+    static final Vector2d path0 = new Vector2d(-36,24); //gets ready to shoot artifacts
 //    static final Vector2d path1 = new Vector2d(-12,24); //gets ready to intake artifacts
 //    static final Vector2d path2 = new Vector2d(-12,60); //intakes artifacts
 //    static final Vector2d path3 = new Vector2d(-46,46); //gets ready to shoot artifacts
-    static final Vector2d path1 = new Vector2d(-12,50); // parks outside of the zone
+    static final Vector2d path1 = new Vector2d(-30,52); // parks outside of the zone
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -160,18 +160,18 @@ public class TestRBIntake extends LinearOpMode { //updated
                         waitTimer.reset();
                     }
 
-//                case Shoot1:
-//                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
-//                    waitTimer.reset();
-//                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
-//                        if (waitTimer.milliseconds() >= 2000){
-//                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
-//                        }
-//                    }
-//                    if(!drive.isBusy()) {
-//                        currentState = State.MTSP;
-//                    }
-//                    break;
+                case Shoot1:
+                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+                    waitTimer.reset();
+                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
+                        if (waitTimer.milliseconds() >= 2000){
+                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+                        }
+                    }
+                    if(!drive.isBusy()) {
+                        currentState = State.End;
+                    }
+                    break;
 //
 //                case MTSP:
 //                    if (!drive.isBusy()) {
@@ -213,6 +213,7 @@ public class TestRBIntake extends LinearOpMode { //updated
                 case End:
                     if(!drive.isBusy()) {
                         drive.followTrajectorySequenceAsync(P1);
+                        currentState = State.IDLE;
                     }
                     break;
             }
