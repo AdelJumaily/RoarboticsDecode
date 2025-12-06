@@ -159,15 +159,19 @@ public class TestRBIntake extends LinearOpMode { //updated.
                         currentState = State.Shoot1;
                         waitTimer.reset();
                     }
+                    break;
 
                 case Shoot1:
-                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
-                    waitTimer.reset();
-                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
-                        if (waitTimer.milliseconds() >= 2000){
-                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
-                        }
+                    if(!drive.isBusy()) {
+                        drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+                        waitTimer.reset();
                     }
+                        if (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
+                            if (waitTimer.milliseconds() >= 2000) {
+                                drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+                            }
+                        }
+
                     if(!drive.isBusy()) {
                         currentState = State.End;
                     }
