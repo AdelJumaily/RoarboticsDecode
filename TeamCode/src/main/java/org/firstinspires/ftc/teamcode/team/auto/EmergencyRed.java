@@ -105,7 +105,6 @@ public class EmergencyRed extends LinearOpMode { //updated
 
         TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
                 .lineTo(path0)
-                .turn(Math.toRadians(120)) //-0.610865
                 .build();
 /*
       TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
@@ -243,8 +242,6 @@ public class EmergencyRed extends LinearOpMode { //updated
 //
                 case End:
                     break;
-
-
             }
 
 
