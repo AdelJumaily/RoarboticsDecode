@@ -35,12 +35,12 @@ public class RedBack extends LinearOpMode { //updated
 
 
 
-    static final Vector2d path0 = new Vector2d(24,-3);
-    static final Vector2d path1 = new Vector2d(12, 54);
-    static final Vector2d path2 = new Vector2d(38,13);
-    static final Vector2d path3 = new Vector2d(58,13);
-    static final Vector2d path4 = new Vector2d(46.5,46.25);
-    static final Vector2d path5 = new Vector2d(12,54);
+    static final Vector2d path0 = new Vector2d(-24,3);
+    static final Vector2d path1 = new Vector2d(-12, -54);
+    static final Vector2d path2 = new Vector2d(-38,-13);
+    static final Vector2d path3 = new Vector2d(-58,-13);
+    static final Vector2d path4 = new Vector2d(-46.5,-46.25);
+    static final Vector2d path5 = new Vector2d(-12,-54);
 
 
 
@@ -69,7 +69,7 @@ public class RedBack extends LinearOpMode { //updated
     RedBack.State currentState = RedBack.State.WAIT0;
 
 
-    Pose2d startPoseRL = new Pose2d(51.5, 51.25);
+    Pose2d startPoseRL = new Pose2d(-50.5, -50.25);
     //lift test needs to be done (values are estimated/inaccurate)
 
 
