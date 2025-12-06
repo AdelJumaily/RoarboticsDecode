@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.team.auto;
 
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
@@ -12,8 +14,14 @@ import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 
 
+
+
 @Autonomous(name = "Emergency Red", group = "Pixel")
 public class EmergencyRed extends LinearOpMode { //updated
+
+
+
+
 
 
 
@@ -23,13 +31,19 @@ public class EmergencyRed extends LinearOpMode { //updated
     private static TimeProfiler updateRuntime;
 
 
+
+
     private static final double width = 16.25;
     private static final double length = 16;
 
 
 
+
+
+
     public static double DISTANCE = 5;
     static final Vector2d path0 = new Vector2d(72,50); // gets out of the way
+
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -37,7 +51,12 @@ public class EmergencyRed extends LinearOpMode { //updated
 
 
 
+
+
+
+
     enum State {
+
 
         IDLE,
         WAIT0,
@@ -49,10 +68,16 @@ public class EmergencyRed extends LinearOpMode { //updated
         End, //
 
 
+
+
     }
 
 
+
+
     EmergencyRed.State currentState = State.IDLE;
+
+
 
 
     Pose2d startPoseRL = new Pose2d(72, 24, Math.toRadians(120));
@@ -62,12 +87,20 @@ public class EmergencyRed extends LinearOpMode { //updated
 
 
 
+
+
+
+
     public void runOpMode() throws InterruptedException {
         setUpdateRuntime(new TimeProfiler(false));
 
 
+
+
         drive = new DCBaseLIS(hardwareMap);
         drive.setPoseEstimate(startPoseRL);
+
+
 
 
         TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
@@ -75,15 +108,17 @@ public class EmergencyRed extends LinearOpMode { //updated
                 .turn(Math.toRadians(120)) //-0.610865
                 .build();
 /*
-       TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
-               .lineTo(path5)
-               .build();
+      TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
+              .lineTo(path5)
+              .build();
 
 
-       TrajectorySequence P6 = drive.trajectorySequenceBuilder(P5.end())
-               .lineTo(path6)
-               .build();
-       */
+
+
+      TrajectorySequence P6 = drive.trajectorySequenceBuilder(P5.end())
+              .lineTo(path6)
+              .build();
+      */
         drive.getExpansionHubs().update(getDt());
 //        drive.robot.getDCIntakeSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
@@ -91,37 +126,58 @@ public class EmergencyRed extends LinearOpMode { //updated
 
 
 
+
+
+
+
         double t1 = waitTimer.milliseconds();
 
 
+
+
         double t2 = waitTimer.milliseconds();
+
+
 
 
         telemetry.addData("Initialize Time Seconds", (t2 - t1));
         telemetry.update();
 
 
+
+
         telemetry.update();
         waitForStart();
 
+
 //hello
 
+
         if (isStopRequested()) return;
+
+
 
 
         currentState = State.WAIT0;
 
 
+
+
         while (opModeIsActive() && !isStopRequested()) {
+
 
             setDt(getUpdateRuntime().getDeltaTime(TimeUnits.SECONDS, true));
 
 
+
+
             switch (currentState) {
+
 
                 case IDLE:
                     PoseStorage.currentPose = drive.getPoseEstimate();
                     break;
+
 
                 case WAIT0:
                     if(!drive.isBusy()) {
@@ -129,6 +185,7 @@ public class EmergencyRed extends LinearOpMode { //updated
                         currentState = State.End;
                     }
                     break;
+
 
 //                case Shoot1:
 //                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
@@ -187,12 +244,19 @@ public class EmergencyRed extends LinearOpMode { //updated
                 case End:
                     break;
 
+
             }
 
 
 
 
+
+
+
+
             drive.update();
+
+
 
 
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
@@ -201,8 +265,14 @@ public class EmergencyRed extends LinearOpMode { //updated
 //            drive.robot.getDCIntakeSubsystem().update(getDt());
 
 
+
+
             telemetry.update();
         }
+
+
+
+
 
 
 
@@ -214,9 +284,13 @@ public class EmergencyRed extends LinearOpMode { //updated
     }
 
 
+
+
     public static void setUpdateRuntime(TimeProfiler updaRuntime) {
         updateRuntime = updaRuntime;
     }
+
+
 
 
     public static double getDt() {
@@ -224,7 +298,10 @@ public class EmergencyRed extends LinearOpMode { //updated
     }
 
 
+
+
     public static void setDt(double pdt) {
         dt = pdt;
     }
 }
+
