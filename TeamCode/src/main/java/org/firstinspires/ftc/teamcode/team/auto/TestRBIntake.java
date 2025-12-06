@@ -1,15 +1,21 @@
 package org.firstinspires.ftc.teamcode.team.auto;
 
-
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
+import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCExpansionHubsLIS;
+
 
 @Autonomous(name = "Red back TEST", group = "Pixel")
 public class TestRBIntake extends LinearOpMode { //updated
@@ -27,7 +33,7 @@ public class TestRBIntake extends LinearOpMode { //updated
 
 
 
-
+    public static double DISTANCE = 5;
     static final Vector2d path0 = new Vector2d(3,24);
     static final Vector2d path1 = new Vector2d(-52, 12);
     static final Vector2d path2 = new Vector2d(-13,38);
@@ -47,6 +53,8 @@ public class TestRBIntake extends LinearOpMode { //updated
 
 
     enum State {
+
+        IDLE,
         WAIT0,
         MTSP, //move to shooting position
         Shoot1, //shoots the 3 balls 1st time
@@ -59,10 +67,10 @@ public class TestRBIntake extends LinearOpMode { //updated
     }
 
 
-    TestRBIntake.State currentState = TestRBIntake.State.WAIT0;
+    TestRBIntake.State currentState = State.IDLE;
 
 
-    Pose2d startPoseRL = new Pose2d(-50.5, 50.25);
+    Pose2d startPoseRL = new Pose2d(-50.5, 50.25, Math.toRadians(120));
     //lift test needs to be done (values are estimated/inaccurate)
 
 
@@ -78,7 +86,7 @@ public class TestRBIntake extends LinearOpMode { //updated
 
         TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
                 .lineTo(path4)
-                .turn(-0.610865)
+                .turn(Math.toRadians(120)) //-0.610865
                 .build();
 
 
@@ -122,7 +130,7 @@ public class TestRBIntake extends LinearOpMode { //updated
                .lineTo(path6)
                .build();
        */
-        //drive.getITDExpansionHubsLACH().update(getDt());
+        drive.getExpansionHubs().update(getDt());
 //        drive.robot.getDCIntakeSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
 
@@ -146,90 +154,87 @@ public class TestRBIntake extends LinearOpMode { //updated
         if (isStopRequested()) return;
 
 
-        currentState = TestRBIntake.State.WAIT0;
+        currentState = State.WAIT0;
 
 
         while (opModeIsActive() && !isStopRequested()) {
-
 
             setDt(getUpdateRuntime().getDeltaTime(TimeUnits.SECONDS, true));
 
 
             switch (currentState) {
 
+                case IDLE:
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+                    break;
 
                 case WAIT0:
+                    telemetry.addLine("doing P0");
                     if(!drive.isBusy()) {
                         drive.followTrajectorySequenceAsync(P0);
-                        currentState = TestRBIntake.State.Shoot1;
+                        telemetry.addLine("Going to next State");
+                        currentState = State.MTSP;
                         waitTimer.reset();
                     }
-                    break;
 
 
                 case MTSP:
                     telemetry.addLine("Should of done P0");
+                    if (!drive.isBusy()) {
+                        currentState = State.Shoot1;
+                    }
                     break;
-//                    drive.followTrajectorySequenceAsync(P1);
-//                    if (!drive.isBusy()) {
-//                        currentState = State.END;
-//                    }
 
 
                 case Shoot1:
-                    /*  drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
-                           waitTimer.reset();
-                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
-                        if (waitTimer.milliseconds() >= 2000){
-                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
-                        }
-                    }
-                    */
                     if(!drive.isBusy()) {
-                        currentState = State.MTBLP;
+                        drive.followTrajectorySequenceAsync(P1);
+                        telemetry.addLine("Going to P1");
+                        currentState = State.IDLE;
                     }
-
-
-
-
-
-
-                case MTBLP:
-                    drive.followTrajectorySequenceAsync(P2);
-                    if(!drive.isBusy()){
-                        currentState = State.MTBRP;
-                    }
-
-
-
-
-                case MTBRP:
-//                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
-//                    drive.followTrajectorySequenceAsync(P3);
-//                    if(!drive.isBusy()) {
-//                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
-//                        drive.followTrajectorySequenceAsync(P1);
+                    break;
+//
+//
+//
+//
+//
+//
+//                case MTBLP:
+//                    drive.followTrajectorySequenceAsync(P2);
+//                    if(!drive.isBusy()){
+//                        currentState = State.MTBRP;
 //                    }
-                case Shoot2:
-                    /*
-                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
-                    waitTimer.reset();
-                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
-                        if (waitTimer.milliseconds() >= 2000){
-                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
-                        }
-                    }
-                     */
-                    if(!drive.isBusy()) {
-                        currentState = State.End;
-                    }
-
-
-                case End:
-                    drive.followTrajectorySequenceAsync(P0);
-                    if(!drive.isBusy()) {
-                        break;
-                    }
+//
+//
+//
+//
+//                case MTBRP:
+////                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
+////                    drive.followTrajectorySequenceAsync(P3);
+////                    if(!drive.isBusy()) {
+////                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+////                        drive.followTrajectorySequenceAsync(P1);
+////                    }
+//                case Shoot2:
+//                    /*
+//                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+//                    waitTimer.reset();
+//                    while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
+//                        if (waitTimer.milliseconds() >= 2000){
+//                            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+//                        }
+//                    }
+//                     */
+//                    if(!drive.isBusy()) {
+//                        currentState = State.End;
+//                    }
+//
+//
+//                case End:
+//                    drive.followTrajectorySequenceAsync(P0);
+//                    if(!drive.isBusy()) {
+//                        break;
+//                    }
 
 
             }
@@ -241,9 +246,9 @@ public class TestRBIntake extends LinearOpMode { //updated
 
 
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
-            //drive.getDCExpansionHubsLIS().update(getDt());
+            drive.getExpansionHubs().update(getDt());
             //drive.robot.getDCLiftSubsystem().update(getDt());
-            drive.robot.getDCIntakeSubsystem().update(getDt());
+//            drive.robot.getDCIntakeSubsystem().update(getDt());
 
 
             telemetry.update();
