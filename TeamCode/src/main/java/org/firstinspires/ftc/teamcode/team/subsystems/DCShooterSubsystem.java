@@ -1,62 +1,42 @@
 package org.firstinspires.ftc.teamcode.team.subsystems;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.drivers.RevMotor;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 
-public class DCShooterSubsystem implements ISubsystem<DCShooterStateMachine, DCShooterStateMachine.State> {
-    private static DCShooterStateMachine DCShooterStateMachine;
-    private RevMotor ShooterWheels;
+/**
+ * Shooter subsystem for DC robot.
+ * Manages the shooter motor and state machine.
+ */
+public class DCShooterSubsystem extends BaseSubsystem<DCShooterStateMachine, DCShooterStateMachine.State> {
+    private final RevMotor shooterMotor;
 
-    public DCShooterSubsystem(RevMotor ShooterMotor){
-        setShooterStateMachine(new DCShooterStateMachine());
-        setShooterWheels(ShooterMotor);
-    }
-
-    @Override
-    public DCShooterStateMachine getStateMachine() {
-        return DCShooterStateMachine;
-    }
-
-    @Override
-    public DCShooterStateMachine.State getState() {
-        return getStateMachine().getState();
-    }
-
-    @Override
-    public void start() {
-
+    /**
+     * Creates a new shooter subsystem.
+     *
+     * @param shooterMotor The motor for the shooter
+     */
+    public DCShooterSubsystem(RevMotor shooterMotor) {
+        super(new DCShooterStateMachine(), "Shooter Subsystem");
+        this.shooterMotor = shooterMotor;
     }
 
     @Override
     public void stop() {
-        getShooterWheels().setPower(0d);
-    }
-
-    @Override
-    public void writeToTelemetry(Telemetry telemetry) {
-
+        shooterMotor.setPower(0.0);
     }
 
     @Override
     public void update(double dt) {
-        getStateMachine().update(dt);
-        getShooterWheels().setPower(getState().getPower());
+        super.update(dt);
+        shooterMotor.setPower(getState().getPower());
     }
 
-    @Override
-    public String getName() {
-        return "Outtle Flywheel Subsystem";
-    }
-
-    private static void setShooterStateMachine(DCShooterStateMachine ShooterSM) {
-        DCShooterSubsystem.DCShooterStateMachine = ShooterSM;
-    }
-
-    private void setShooterWheels(RevMotor ShooterMotor){
-        this.ShooterWheels = ShooterMotor;
-    }
-    private RevMotor getShooterWheels(){
-        return ShooterWheels;
+    /**
+     * Gets the shooter motor.
+     *
+     * @return The shooter motor
+     */
+    public RevMotor getShooterMotor() {
+        return shooterMotor;
     }
 }

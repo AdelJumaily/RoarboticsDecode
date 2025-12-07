@@ -13,8 +13,8 @@ public class DCShooterStateMachine extends SimpleState<DCShooterStateMachine.Sta
     }
 
     public enum State implements Namable {
-        IDLE("Idle", 0d),
-        SHOOT("Shoot", -0.65d);
+        IDLE("Idle", 0.0),
+        SHOOT("Shoot", -0.65);
 
         private final String name;
         private final double power;

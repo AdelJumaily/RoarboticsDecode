@@ -13,9 +13,9 @@ public class DCIntakeStateMachine extends SimpleState<DCIntakeStateMachine.State
     }
 
     public enum State implements Namable {
-        IDLE("Idle", 0d),
-        INTAKE("Intake", 0.55d),
-        OUTTAKE("Outtake", -0.65d);
+        IDLE("Idle", 0.0),
+        INTAKE("Intake", 0.55),
+        OUTTAKE("Outtake", -0.65);
 
         private final String name;
         private final double power;

@@ -52,17 +52,18 @@ public abstract class DCTeleopRobotLIS extends Robot {
         super.loop();
         drive.getExpansionHubs().update(getDt());
         drive.update();
-        drive.robot.getDCIntakeSubsystem().update(getDt());
-        drive.robot.getDCShooterSubsystem().update(getDt());
-        drive.robot.getDCLiftSubsystem().update(getDt());
+        drive.robot.getIntakeSubsystem().update(getDt());
+        drive.robot.getShooterSubsystem().update(getDt());
+        drive.robot.getLiftSubsystem().update(getDt());
     }
 
     @Override
     public void stop() {
         super.stop();
         drive.getExpansionHubs().stop();
-        drive.robot.getDCLiftSubsystem().stop();
-        drive.robot.getDCShooterSubsystem().stop();
+        drive.robot.getLiftSubsystem().stop();
+        drive.robot.getShooterSubsystem().stop();
+        drive.robot.getIntakeSubsystem().stop();
     }
 
     public TimeProfiler getMatchRuntime() {

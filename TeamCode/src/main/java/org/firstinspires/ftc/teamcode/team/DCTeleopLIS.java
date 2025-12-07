@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.team.auto.DCBaseLIS;
+import org.firstinspires.ftc.teamcode.team.config.DCRobotConfig;
 import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 
@@ -39,10 +40,8 @@ import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 @TeleOp(name = "DC TeleOp LIS", group = "Main")
 public class DCTeleopLIS extends DCTeleopRobotLIS {
 
-    private double currentTime = 0; // keep track of current time
-    private double speedMultiplier = 0.7;
-    private double LiftOut = 0d;
-    private double LiftIn = 10d;
+    private double currentTime = 0;
+    private double speedMultiplier = DCRobotConfig.DriveSpeed.SLOW;
 
     private Pose2d poseEstimate;
 
@@ -74,49 +73,46 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
                 )
         );
 
-        //This changes the speed the robot moves at
+        // Speed control
         if (getEnhancedGamepad1().isLeftBumperJustPressed()) {
-            speedMultiplier = 0.7;
+            speedMultiplier = DCRobotConfig.DriveSpeed.SLOW;
         }
         if (getEnhancedGamepad1().isRightBumperJustPressed()) {
-            speedMultiplier = 1.0;
+            speedMultiplier = DCRobotConfig.DriveSpeed.NORMAL;
         }
 
 
-        //Intake
-        //spins the intake to intake a pixel
+        // Intake control
         if (getEnhancedGamepad1().getRight_trigger() > 0) {
-            drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
+            drive.robot.getIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
         }
         if (getEnhancedGamepad1().getLeft_trigger() > 0) {
-            drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+            drive.robot.getIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
         }
 
-        //Shooter
-        //spins the intake to intake a pixel
-        if (getEnhancedGamepad1().getRight_trigger() > 0) {
-            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+        // Shooter control
+        if (getEnhancedGamepad1().isAPressed()) {
+            drive.robot.getShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
         }
-        if (getEnhancedGamepad1().getLeft_trigger() > 0) {
-            drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+        if (getEnhancedGamepad1().isBPressed()) {
+            drive.robot.getShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
         }
 
-
-        //Lift
-        if(getEnhancedGamepad1().isDpadDownJustPressed()){
-            drive.robot.getDCLiftSubsystem().extend(LiftOut);
+        // Lift control
+        if (getEnhancedGamepad1().isDpadDownJustPressed()) {
+            drive.robot.getLiftSubsystem().extend(DCRobotConfig.LiftPositions.LIFT_OUT);
         }
-        if(getEnhancedGamepad1().isDpadUpJustPressed()){
-            drive.robot.getDCLiftSubsystem().extend(LiftIn);
+        if (getEnhancedGamepad1().isDpadUpJustPressed()) {
+            drive.robot.getLiftSubsystem().extend(DCRobotConfig.LiftPositions.LIFT_IN);
         }
 
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        telemetry.addData("Intake State: ", drive.robot.getDCIntakeSubsystem().getStateMachine().getState());
-        telemetry.addData("Shooter State: ", drive.robot.getDCShooterSubsystem().getStateMachine().getState());
-        telemetry.addData("Lift State: ", drive.robot.getDCLiftSubsystem().getStateMachine().getState());
+        telemetry.addData("Intake State: ", drive.robot.getIntakeSubsystem().getState());
+        telemetry.addData("Shooter State: ", drive.robot.getShooterSubsystem().getState());
+        telemetry.addData("Lift State: ", drive.robot.getLiftSubsystem().getState());
 
 
         updateTelemetry(telemetry);

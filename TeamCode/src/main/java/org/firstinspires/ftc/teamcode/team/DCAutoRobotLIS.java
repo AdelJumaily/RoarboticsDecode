@@ -34,64 +34,60 @@ import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
  * Misc. sensors naming convention:
 
  */
+/**
+ * DC Robot class for autonomous operations.
+ * Manages all robot subsystems and hardware initialization.
+ */
 public class DCAutoRobotLIS {
     private TimeProfiler matchRuntime;
     private RobotStateEstimator robotStateEstimator;
     private Drive drive;
-    private DCExpansionHubsLIS dcExpansionHubsLIS;
-    private DCLiftSubsystem DCliftSubsystem;
-    private DCShooterSubsystem DCshooterSubsystem;
-    private DCIntakeSubsystem DCintakeSubsystem;
-
+    private DCExpansionHubsLIS expansionHubs;
+    private DCLiftSubsystem liftSubsystem;
+    private DCShooterSubsystem shooterSubsystem;
+    private DCIntakeSubsystem intakeSubsystem;
 
     private RevMotor[] motors;
     private RevServo[] servos;
 
-
+    /**
+     * Initializes the robot with hardware from the hardware map.
+     *
+     * @param hardwareMap The hardware map containing all robot hardware
+     */
     public void init(HardwareMap hardwareMap) {
-//        setExpansionHubs(new ExpansionHubs(this,
-//                hardwareMap.get(ExpansionHubEx.class, "Control Hub"),
-//                hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2"))
-//        );
+        // Initialize motors
+        motors = new RevMotor[] {
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, false, true, 
+                        Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), // 38.2mm diameter
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), false, false, false, true, 
+                        Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION()),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Shooter")), false, true, false, true, 
+                        Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
+        };
 
-        setMotors(new RevMotor[] {
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), false, false, false, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION()),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Shooter")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
-        });
-
-//        setServos(new RevServo[] {
-//                new RevServo((ExpansionHubServo)(hardwareMap.get("Outtake"))),
-//                new RevServo((ExpansionHubServo)(hardwareMap.get("Drone")))
-//        });
-
-        setDCLiftSubsystem(new DCLiftSubsystem(getMotors()[0]));
-        setDCIntakeSubsystem(new DCIntakeSubsystem(getMotors()[1]));
-        setDCShooterSubsystem(new DCShooterSubsystem(getMotors()[2]));
-        setMatchRuntime(new TimeProfiler(false));
+        // Initialize subsystems
+        liftSubsystem = new DCLiftSubsystem(motors[0]);
+        intakeSubsystem = new DCIntakeSubsystem(motors[1]);
+        shooterSubsystem = new DCShooterSubsystem(motors[2]);
+        
+        matchRuntime = new TimeProfiler(false);
     }
     public RevMotor[] getMotors() {
         return motors;
-    }
-
-    public void setMotors(RevMotor[] motors) {
-        this.motors = motors;
     }
 
     public RevServo[] getServos() {
         return servos;
     }
 
-    public void setServos(RevServo[] servos) {
-        this.servos = servos;
-    }
-
+    // Getters for subsystems
     public DCExpansionHubsLIS getExpansionHubs() {
-        return dcExpansionHubsLIS;
+        return expansionHubs;
     }
 
-    public void setDCExpansionHubsLIS(DCExpansionHubsLIS dExpansionHubsLIS) {
-        this.dcExpansionHubsLIS = dExpansionHubsLIS;
+    public void setExpansionHubs(DCExpansionHubsLIS expansionHubs) {
+        this.expansionHubs = expansionHubs;
     }
 
     public RobotStateEstimator getRobotStateEstimator() {
@@ -110,28 +106,16 @@ public class DCAutoRobotLIS {
         this.drive = drive;
     }
 
-    public DCLiftSubsystem getDCLiftSubsystem() {
-        return DCliftSubsystem;
+    public DCLiftSubsystem getLiftSubsystem() {
+        return liftSubsystem;
     }
 
-    public void setDCLiftSubsystem(DCLiftSubsystem DCliftSubsystem){
-        this.DCliftSubsystem = DCliftSubsystem;
+    public DCIntakeSubsystem getIntakeSubsystem() {
+        return intakeSubsystem;
     }
 
-    public DCIntakeSubsystem getDCIntakeSubsystem() {
-        return DCintakeSubsystem;
-    }
-
-    public void setDCIntakeSubsystem(DCIntakeSubsystem intakeSubsystem){
-        this.DCintakeSubsystem = intakeSubsystem;
-    }
-
-    public DCShooterSubsystem getDCShooterSubsystem() {
-        return DCshooterSubsystem;
-    }
-
-    public void setDCShooterSubsystem(DCShooterSubsystem DCshooterSubsystem){
-        this.DCshooterSubsystem = DCshooterSubsystem;
+    public DCShooterSubsystem getShooterSubsystem() {
+        return shooterSubsystem;
     }
 
     public TimeProfiler getMatchRuntime() {

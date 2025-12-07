@@ -89,58 +89,23 @@ public class DCBaseLIS extends MecanumDrive {
 
     public static int POSE_HISTORY_LIMIT = 100;
 
-    public enum Mode {
-        IDLE,
-        TURN,
-        FOLLOW_TRAJECTORY
-    }
-
-    private FtcDashboard dashboard;
-    private NanoClock clock;
-
-    private Mode mode;
-
-    private PIDFController turnController;
-    private MotionProfile turnProfile;
-    private double turnStart;
-
-   // private TrajectoryFollower follower;
-
-    private LinkedList<Pose2d> poseHistory;
-
-    //public DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    //public RevMotor shooter1, shooter2, forkliftMotor, intakeMotor;
-    //public  RevServo elevatorServo, flicker1, flicker2;
-
-   // private List<DcMotorEx> motors;
-
- //   private VoltageSensor batteryVoltageSensor;
-
-    private Pose2d lastPoseOnTurn;
 
     public DCBaseLIS(HardwareMap hardwareMap) {
         this(hardwareMap, false);
     }
 
-    public DCBaseLIS(HardwareMap hardwareMap, boolean IsteleOp) {
+    /**
+     * Creates a new DC base drive system.
+     *
+     * @param hardwareMap The hardware map
+     * @param isTeleOp Whether this is for teleop (affects initialization)
+     */
+    public DCBaseLIS(HardwareMap hardwareMap, boolean isTeleOp) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         robot.init(hardwareMap);
-        //if (!IsteleOp)
-        //initVuforia(hardwareMap);
+        
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
-
-//        dashboard = FtcDashboard.getInstance();
-//        dashboard.setTelemetryTransmissionInterval(25);
-//
-////        clock = NanoClock.system();
-////
-////        mode = Mode.IDLE;
-//
-////        turnController = new PIDFController(HEADING_PID);
-////        turnController.setInputBounds(0, 2 * Math.PI);
-//
-//        poseHistory = new LinkedList<>();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -150,15 +115,12 @@ public class DCBaseLIS extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
-//        imu = hardwareMap.get(BNO055IMU.class, "imu");
-//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-//        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-//        imu.initialize(parameters);
+        // TODO: Initialize IMU when needed
+        // imu = hardwareMap.get(BNO055IMU.class, "imu");
+        // BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        // parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        // imu.initialize(parameters);
 
-        //blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
-
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         setExpansionHubs(new DCExpansionHubsLIS(robot,
                 hardwareMap.get(ExpansionHubEx.class, "Control Hub"),
                 hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2"))
@@ -220,21 +182,6 @@ public class DCBaseLIS extends MecanumDrive {
         );
     }
 
-//    public void turnAsync(double angle) {
-//        double heading = getPoseEstimate().getHeading();
-//
-//        lastPoseOnTurn = getPoseEstimate();
-//
-//        turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-//                new MotionState(heading, 0, 0, 0),
-//                new MotionState(heading + angle, 0, 0, 0),
-//                MAX_ANG_VEL,
-//                MAX_ANG_ACCEL
-//        );
-//
-//        turnStart = clock.seconds();
-//        mode = Mode.TURN;
-//    }
 
     public void turnAsync(double angle) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
@@ -267,24 +214,14 @@ public class DCBaseLIS extends MecanumDrive {
     }
 
     public void cancelFollowing() {
-        mode = Mode.IDLE;
+        // Stop trajectory following
+        setDriveSignal(new DriveSignal());
     }
 
     public Pose2d getLastError() {
         return trajectorySequenceRunner.getLastPoseError();
     }
 
-//    public Pose2d getLastError() {
-//        switch (mode) {
-//            case FOLLOW_TRAJECTORY:
-//                return follower.getLastError();
-//            case TURN:
-//                return new Pose2d(0, 0, turnController.getLastError());
-//            case IDLE:
-//                return new Pose2d();
-//        }
-//        throw new AssertionError();
-//    }
 
 //    public void update() {
 //        updatePoseEstimate();
@@ -465,30 +402,9 @@ public class DCBaseLIS extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        // TODO: This must be changed to match your configuration
-        //                           | Z axis
-        //                           |
-        //     (Motor Port Side)     |   / X axis
-        //                       ____|__/____
-        //          Y axis     / *   | /    /|   (IO Side)
-        //          _________ /______|/    //      I2C
-        //                   /___________ //     Digital
-        //                  |____________|/      Analog
-        //
-        //                 (Servo Port Side)
-        //
-        // The positive x axis points toward the USB port(s)
-        //
-        // Adjust the axis rotation rate as necessary
-        // Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
-        // flat on a surface
-
-        // To work around an SDK bug, use -zRotationRate in place of xRotationRate
-        // and -xRotationRate in place of zRotationRate (yRotationRate behaves as
-        // expected). This bug does NOT affect orientation.
-        //
-        // See https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/251 for details.
-        return (double) -imu.getAngularVelocity().yRotationRate;
+        // IMU is not currently configured, return 0
+        // TODO: Initialize IMU and return actual heading velocity when needed
+        return 0.0;
     }
 
 

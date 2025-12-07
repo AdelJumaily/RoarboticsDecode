@@ -12,16 +12,24 @@ import java.util.function.DoubleConsumer;
 //  Mid = 23.75 inches,
 //  Low = 13.75 inches
 
+/**
+ * State machine for the DC lift subsystem.
+ */
 public class DCLiftStateMachine implements IState<DCLiftStateMachine.State> {
     private static DoubleConsumer runExtension;
     private DCLiftSubsystem dcLiftSubsystem;
     private State state;
     private State desiredState;
 
-    public DCLiftStateMachine(DCLiftSubsystem dcliftSubsystem) {
-        setDCLiftSubsystem(dcliftSubsystem);
-        setState(State.IDLE);
-        setDesiredState(State.IDLE);
+    /**
+     * Creates a new lift state machine.
+     *
+     * @param liftSubsystem The lift subsystem (can be null initially)
+     */
+    public DCLiftStateMachine(DCLiftSubsystem liftSubsystem) {
+        this.dcLiftSubsystem = liftSubsystem;
+        this.state = State.IDLE;
+        this.desiredState = State.IDLE;
     }
 
     @Override
@@ -31,7 +39,10 @@ public class DCLiftStateMachine implements IState<DCLiftStateMachine.State> {
 
     @Override
     public boolean hasReachedStateGoal() {
-        return getDCLiftSubsystem().closeToSetpoint(1 / 4d) && DCLiftSubsystem.getExtensionProfile().isDone();
+        if (dcLiftSubsystem == null) return false;
+        IMotionProfile profile = dcLiftSubsystem.getExtensionProfile();
+        return dcLiftSubsystem.closeToSetpoint(0.25) && 
+               (profile == null || profile.isDone());
     }
 
     @Override
@@ -65,11 +76,11 @@ public class DCLiftStateMachine implements IState<DCLiftStateMachine.State> {
     }
 
     @Override
-    public void update(double dt) { //new change
+    public void update(double dt) {
         if (attemptingStateChange()) {
             setState(getDesiredState());
-            if (getRunExtension() != null) {
-                getRunExtension().accept(DCLiftSubsystem.getDesiredSetpoint());
+            if (dcLiftSubsystem != null && getRunExtension() != null) {
+                getRunExtension().accept(dcLiftSubsystem.getDesiredSetpoint());
             }
         }
     }
@@ -97,7 +108,9 @@ public class DCLiftStateMachine implements IState<DCLiftStateMachine.State> {
         return dcLiftSubsystem;
     }
 
-    public void setDCLiftSubsystem(DCLiftSubsystem dcLiftSubsystem) {this.dcLiftSubsystem = dcLiftSubsystem;}
+    public void setDCLiftSubsystem(DCLiftSubsystem dcLiftSubsystem) {
+        this.dcLiftSubsystem = dcLiftSubsystem;
+    }
 
     public static DoubleConsumer getRunExtension() {return runExtension;}
 

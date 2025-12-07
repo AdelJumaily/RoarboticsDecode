@@ -9,32 +9,34 @@ import org.firstinspires.ftc.teamcode.team.DbgLog;
 import org.firstinspires.ftc.teamcode.team.states.DCLiftStateMachine;
 
 @PIDSVA(name = "Extend",
-        P = 0.4d,
-        I = 0d,
-        D = 0.00d,
-        S = 0.05d,
-        V = (1 - 0.05) / 15d,
-        A = 0d
+        P = 0.4,
+        I = 0.0,
+        D = 0.00,
+        S = 0.05,
+        V = (1 - 0.05) / 15.0,
+        A = 0.0
 )
-
 @PIDSVA(name = "Retract",
-        P = 0.08d,
-        I = 0d,
-        D = 0d,
-        S = 0.05d,
-        V = 1 / 55d,
-        A = 0d
+        P = 0.08,
+        I = 0.0,
+        D = 0.0,
+        S = 0.05,
+        V = 1.0 / 55.0,
+        A = 0.0
 )
-public class DCLiftSubsystem implements ISubsystem<DCLiftStateMachine, DCLiftStateMachine.State> {
+/**
+ * Lift subsystem for DC robot.
+ * Manages the lift motor with PID control and motion profiles.
+ */
+public class DCLiftSubsystem extends BaseSubsystem<DCLiftStateMachine, DCLiftStateMachine.State> {
+    // Control constants are static as they're configuration (loaded from annotations)
     private static final ControlConstants EXTEND_CONTROL_CONSTANTS;
     private static final ControlConstants RETRACT_CONTROL_CONSTANTS;
 
-    private static DCLiftStateMachine dcLiftStateMachine;
-    private RevMotor lift;
-
-    private static IMotionProfile extensionProfile = null;
-    private static double setpoint = 0d;
-    private static double desiredSetpoint = 0d;
+    private final RevMotor liftMotor;
+    private IMotionProfile extensionProfile;
+    private double setpoint;
+    private double desiredSetpoint;
     private double lastError;
     private double runningSum;
 
@@ -67,140 +69,136 @@ public class DCLiftSubsystem implements ISubsystem<DCLiftStateMachine, DCLiftSta
         }
     }
 
-    public DCLiftSubsystem(RevMotor lift) {
-        setDCLiftStateMachine(new DCLiftStateMachine(this));
-        setLift(lift);
-        setLastError(0d);
-        resetRunningSum();
+    /**
+     * Creates a new lift subsystem.
+     *
+     * @param liftMotor The motor for the lift
+     */
+    public DCLiftSubsystem(RevMotor liftMotor) {
+        super(new DCLiftStateMachine(null), "Lift Subsystem");
+        this.liftMotor = liftMotor;
+        this.setpoint = 0.0;
+        this.desiredSetpoint = 0.0;
+        this.lastError = 0.0;
+        this.runningSum = 0.0;
+        this.extensionProfile = null;
+        
+        // Set the state machine's reference to this subsystem
+        getStateMachine().setDCLiftSubsystem(this);
     }
 
+    /**
+     * Resets the running sum for integral control.
+     */
     public void resetRunningSum() {
-        setRunningSum(0d);
-    }
-
-    @Override
-    public DCLiftStateMachine getStateMachine() {
-        return dcLiftStateMachine;
-    }
-
-    @Override
-    public DCLiftStateMachine.State getState() {
-        return getStateMachine().getState();
-    }
-
-    @Override
-    public void start() {
+        runningSum = 0.0;
     }
 
     @Override
     public void stop() {
-        getLift().setPower(0d);
-        getLift().resetEncoder();
-        setSetpoint(0d);
-        setDesiredSetpoint(0d);
-    }
-
-    @Override
-    public String getName() {
-        return "Lift";
-    }
-
-    @Override
-    public void writeToTelemetry(Telemetry telemetry) {
-
+        liftMotor.setPower(0.0);
+        liftMotor.resetEncoder();
+        setpoint = 0.0;
+        desiredSetpoint = 0.0;
     }
 
     @Override
     public void update(double dt) {
-        //getStateMachine().update(dt);
-        getDCLiftStateMachine().update(dt);
+        super.update(dt);
 
-        double error                = getSetpoint() - getLift().getPosition();
-        double setpointVelocity     = 0d;
-        double setpointAcceleration = 0d;
-        if(getExtensionProfile() != null && !getExtensionProfile().isDone()) {
-            setpointVelocity     = getExtensionProfile().getVelocity();
-            setpointAcceleration = getExtensionProfile().getAcceleration();
+        double error = setpoint - liftMotor.getPosition();
+        double setpointVelocity = 0.0;
+        double setpointAcceleration = 0.0;
+        
+        if (extensionProfile != null && !extensionProfile.isDone()) {
+            setpointVelocity = extensionProfile.getVelocity();
+            setpointAcceleration = extensionProfile.getAcceleration();
         }
 
-        DbgLog.msg("Error: " + String.valueOf(error));
-
-        setRunningSum(getRunningSum() + error * dt);
+        runningSum += error * dt;
+        
         double output;
-        if(getDCLiftStateMachine().getState().equals(DCLiftStateMachine.State.EXTEND)) { //changed from getstate to getdesiredstate
-            output = getExtendControlConstants().getOutput(dt, error, getLastError(), getRunningSum(), setpointVelocity, setpointAcceleration, false);
-            output += getExtendControlConstants().kS();
+        if (getState().equals(DCLiftStateMachine.State.EXTEND)) {
+            output = EXTEND_CONTROL_CONSTANTS.getOutput(dt, error, lastError, runningSum, 
+                    setpointVelocity, setpointAcceleration, false);
+            output += EXTEND_CONTROL_CONSTANTS.kS();
+        } else {
+            output = RETRACT_CONTROL_CONSTANTS.getOutput(dt, error, lastError, runningSum, 
+                    setpointVelocity, setpointAcceleration, true);
         }
-        else {
-            output = getRetractControlConstants().getOutput(dt, error, getLastError(), getRunningSum(), setpointVelocity, setpointAcceleration, true);
-        }
 
-        DbgLog.msg("Output: " + String.valueOf(output));
-
-        setLastError(error);
-        getLift().setPower(output);
-
+        lastError = error;
+        liftMotor.setPower(output);
     }
 
-    public void extend(Double set) {
+    /**
+     * Extends the lift to the specified position.
+     *
+     * @param position The target position
+     */
+    public void extend(double position) {
         resetRunningSum();
-        setSetpoint(set);
+        setSetpoint(position);
     }
 
+    /**
+     * Retracts the lift to home position.
+     */
     public void retract() {
         resetRunningSum();
-        setSetpoint(0d);
-        setDesiredSetpoint(0d);
+        setSetpoint(0.0);
+        desiredSetpoint = 0.0;
     }
 
+    /**
+     * Checks if the lift is close to the setpoint.
+     *
+     * @param threshold The tolerance threshold
+     * @return true if within threshold
+     */
     public boolean closeToSetpoint(double threshold) {
-        return Math.abs(getSetpoint() - getLift().getPosition()) <= threshold;
+        return Math.abs(setpoint - liftMotor.getPosition()) <= threshold;
     }
 
-    public static DCLiftStateMachine getDCLiftStateMachine() {
-        return dcLiftStateMachine;
-    }
-
-    public static void setDCLiftStateMachine(DCLiftStateMachine liftSM) {
-        DCLiftSubsystem.dcLiftStateMachine = liftSM;
-    }
-
-    public RevMotor getLift() {
-        return lift;
-    }
-
-    public void setLift(RevMotor lift) {
-        this.lift = lift;
-    }
-
-    public static double getSetpoint() {
-        return setpoint;
-    }
-
+    /**
+     * Sets the lift setpoint and updates state machine accordingly.
+     *
+     * @param setpoint The target setpoint
+     */
     public void setSetpoint(double setpoint) {
-        setDesiredSetpoint(setpoint);
-        if(setpoint != getSetpoint() && (getExtensionProfile() == null || getExtensionProfile().isDone())) {
-            if(setpoint != 0d) {
-                //Extending
-                getDCLiftStateMachine().updateState(DCLiftStateMachine.State.EXTEND);
+        desiredSetpoint = setpoint;
+        if (setpoint != this.setpoint && (extensionProfile == null || extensionProfile.isDone())) {
+            if (setpoint != 0.0) {
+                // Extending
+                getStateMachine().updateState(DCLiftStateMachine.State.EXTEND);
                 this.setpoint = setpoint;
             } else {
-                //Retracting
-                getDCLiftStateMachine().updateState(DCLiftStateMachine.State.RETRACT);
+                // Retracting
+                getStateMachine().updateState(DCLiftStateMachine.State.RETRACT);
                 this.setpoint = setpoint;
-                //setExtensionProfile(new ResidualVibrationReductionMotionProfilerGenerator(
-                //        getLift().getPosition(), -getLift().getPosition(), 25d, 50d
-                //));
             }
         }
     }
 
-    public static IMotionProfile getExtensionProfile() {
+    // Getters
+    public RevMotor getLiftMotor() {
+        return liftMotor;
+    }
+
+    public double getSetpoint() {
+        return setpoint;
+    }
+
+    public double getDesiredSetpoint() {
+        return desiredSetpoint;
+    }
+
+    public IMotionProfile getExtensionProfile() {
         return extensionProfile;
     }
 
-    public static void setExtensionProfile(IMotionProfile extensionProfile) {
-        DCLiftSubsystem.extensionProfile = extensionProfile;
+    public void setExtensionProfile(IMotionProfile extensionProfile) {
+        this.extensionProfile = extensionProfile;
     }
 
     public static ControlConstants getExtendControlConstants() {
@@ -209,29 +207,5 @@ public class DCLiftSubsystem implements ISubsystem<DCLiftStateMachine, DCLiftSta
 
     public static ControlConstants getRetractControlConstants() {
         return RETRACT_CONTROL_CONSTANTS;
-    }
-
-    public double getLastError() {
-        return lastError;
-    }
-
-    public void setLastError(double lastError) {
-        this.lastError = lastError;
-    }
-
-    public double getRunningSum() {
-        return runningSum;
-    }
-
-    public void setRunningSum(double runningSum) {
-        this.runningSum = runningSum;
-    }
-
-     public static double getDesiredSetpoint() {
-        return desiredSetpoint;
-    }
-
-    public static void setDesiredSetpoint(double desiredSetpoint) {
-        DCLiftSubsystem.desiredSetpoint = desiredSetpoint;
     }
 }
