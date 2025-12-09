@@ -77,7 +77,7 @@ public class BlueFront extends LinearOpMode { //updated
 
         drive = new DCBaseLIS(hardwareMap);
         drive.setPoseEstimate(startPoseRL);
-        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+        drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
         drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
         // tells the robot where it could go does not actually move the robot
         TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
@@ -105,7 +105,7 @@ public class BlueFront extends LinearOpMode { //updated
 
 
         //drive.getITDExpansionHubsLACH().update(getDt());
-        drive.robot.getDCIntakeSubsystem().update(getDt());
+        drive.robot.getDCintakeSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
 
 
@@ -186,10 +186,10 @@ public class BlueFront extends LinearOpMode { //updated
                     }
 
                 case MTBRP:
-                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
+                    drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
                     drive.followTrajectorySequenceAsync(P1);
                     if(!drive.isBusy()) {
-                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+                        drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
                         drive.followTrajectorySequenceAsync(P2);
                     }
                 case SHOOT2:
@@ -221,7 +221,7 @@ public class BlueFront extends LinearOpMode { //updated
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
             //drive.getDCExpansionHubsLIS().update(getDt());
             drive.robot.getDCLiftSubsystem().update(getDt());
-            drive.robot.getDCIntakeSubsystem().update(getDt());
+            drive.robot.getDCintakeSubsystem().update(getDt());
             drive.robot.getDCShooterSubsystem().update(getDt());
 
 

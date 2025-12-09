@@ -46,7 +46,7 @@ public class DCIntakeSubsystem implements ISubsystem<DCIntakeStateMachine, DCInt
 
     @Override
     public String getName() {
-        return "Flywheel Subsystem";
+        return "Intake Subsystem";
     }
 
     private static void setIntakeStateMachine(DCIntakeStateMachine intakeSM) {

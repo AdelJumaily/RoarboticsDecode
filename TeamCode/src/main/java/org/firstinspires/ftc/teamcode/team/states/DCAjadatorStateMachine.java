@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.team.states;
 
 import org.firstinspires.ftc.teamcode.lib.util.Namable;
 
-public class DCShooterStateMachine extends SimpleState<DCShooterStateMachine.State> {
-    public DCShooterStateMachine() {
+public class DCAjadatorStateMachine extends SimpleState<DCAjadatorStateMachine.State> {
+    public DCAjadatorStateMachine() {
         super(State.IDLE);
     }
 
@@ -14,7 +14,7 @@ public class DCShooterStateMachine extends SimpleState<DCShooterStateMachine.Sta
 
     public enum State implements Namable {
         IDLE("Idle", 0d),
-        SHOOT("Shoot", 0.95d);
+        Ajadate("Ajadate", 0.6d);
 
         private final String name;
         private final double power;
