@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
+import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
@@ -17,9 +18,12 @@ import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 
 
 
-@Autonomous(name = "Blue front", group = "Pixel")
+@Autonomous(name = "Red front TEST", group = "Pixel")
+public class TestRFIntake extends LinearOpMode { //updated
 
-public class BlueFront extends LinearOpMode { //updated
+
+
+
 
 
 
@@ -29,19 +33,22 @@ public class BlueFront extends LinearOpMode { //updated
     private static TimeProfiler updateRuntime;
 
 
+
+
     private static final double width = 16.25;
     private static final double length = 16;
 
 
 
-    static final Vector2d path0 = new Vector2d(-24,48);
-    static final Vector2d path1 = new Vector2d(-36, 48);
-    static final Vector2d path2 = new Vector2d(-12,-12);
-    static final Vector2d path3 = new Vector2d(-60,12);
-    static final Vector2d path4 = new Vector2d(-36,-12);
 
 
 
+    public static double DISTANCE = 5;
+    static final Vector2d path0 = new Vector2d(-46,46); //gets ready to shoot artifacts
+    static final Vector2d path1 = new Vector2d(-12,24); //gets ready to intake artifacts
+    static final Vector2d path2 = new Vector2d(-12,60); //intakes artifacts
+    static final Vector2d path3 = new Vector2d(-46,46); //gets ready to shoot artifacts
+    static final Vector2d path4 = new Vector2d(-12,50); // parks outside of the zone
 
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -50,23 +57,42 @@ public class BlueFront extends LinearOpMode { //updated
 
 
 
-    // This defines all the states the robot can be in during auto
+
+
+
+
     enum State {
+
+
+        IDLE,
         WAIT0,
-        MTSP, // Moves to shooting position
-        SHOOT1, // Shoots 3 balls
-        MTBLP, // Moves the ball to left position
-        MTBRP, // Moves the ball to right position
-        SHOOT2, // Shoots 3 balls
-        END
+        MTSP, //move to shooting position
+        Shoot1, //shoots the 3 balls 1st time
+        MTBLP, //move to Ball left position
+        MTBRP, //move to Ball right position and
+        Shoot2, //shoots the 3 balls 2nd time
+        End, //
+
+
+
+
     }
 
 
-    BlueFront.State currentState = BlueFront.State.WAIT0;
 
 
-    Pose2d startPoseRL = new Pose2d (-24, -72);
+    TestRFIntake.State currentState = State.IDLE;
+
+
+
+
+    Pose2d startPoseRL = new Pose2d(72, 24, Math.toRadians(120));
+    // Pose2d startPoseRL = new Pose2d(72 - (length/2), 24 - (width/2), Math.toRadians(120)); In case it slams into the edge uncomment
     //lift test needs to be done (values are estimated/inaccurate)
+
+
+
+
 
 
 
@@ -75,14 +101,20 @@ public class BlueFront extends LinearOpMode { //updated
         setUpdateRuntime(new TimeProfiler(false));
 
 
+
+
         drive = new DCBaseLIS(hardwareMap);
         drive.setPoseEstimate(startPoseRL);
-        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
-        drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
-        // tells the robot where it could go does not actually move the robot
+
+
+
+
         TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
-                .lineTo(path0) // MTSP
+                .lineTo(path0)
+                .turn(Math.toRadians(120)) //-0.610865
                 .build();
+
+
 
 
         TrajectorySequence P1 = drive.trajectorySequenceBuilder(P0.end())
@@ -90,23 +122,44 @@ public class BlueFront extends LinearOpMode { //updated
                 .build();
 
 
+
+
         TrajectorySequence P2 = drive.trajectorySequenceBuilder(P1.end())
                 .lineTo(path2)
                 .build();
+
+
+
 
         TrajectorySequence P3 = drive.trajectorySequenceBuilder(P2.end())
                 .lineTo(path3)
                 .build();
 
+
         TrajectorySequence P4 = drive.trajectorySequenceBuilder(P3.end())
                 .lineTo(path4)
-                .turn(35)
                 .build();
 
 
-        //drive.getITDExpansionHubsLACH().update(getDt());
-        drive.robot.getDCIntakeSubsystem().update(getDt());
+/*
+      TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
+              .lineTo(path5)
+              .build();
+
+
+
+
+      TrajectorySequence P6 = drive.trajectorySequenceBuilder(P5.end())
+              .lineTo(path6)
+              .build();
+      */
+        drive.getExpansionHubs().update(getDt());
+//        drive.robot.getDCIntakeSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
+
+
+
+
 
 
 
@@ -114,21 +167,34 @@ public class BlueFront extends LinearOpMode { //updated
         double t1 = waitTimer.milliseconds();
 
 
+
+
         double t2 = waitTimer.milliseconds();
+
+
 
 
         telemetry.addData("Initialize Time Seconds", (t2 - t1));
         telemetry.update();
 
 
+
+
         telemetry.update();
         waitForStart();
+
+
+//hello
 
 
         if (isStopRequested()) return;
 
 
+
+
         currentState = State.WAIT0;
+
+
 
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -137,62 +203,67 @@ public class BlueFront extends LinearOpMode { //updated
             setDt(getUpdateRuntime().getDeltaTime(TimeUnits.SECONDS, true));
 
 
+
+
             switch (currentState) {
 
 
-                case WAIT0:
-                    if (waitTimer.milliseconds() >= 1000)
-                        currentState = BlueFront.State.MTSP;
-                    waitTimer.reset();
-                    telemetry.addLine("in the wait0 state");
+                case IDLE:
+                    PoseStorage.currentPose = drive.getPoseEstimate();
                     break;
 
 
-                case MTSP:
-                    drive.followTrajectorySequenceAsync(P0);
-                    if (waitTimer.milliseconds() >= 500) {
-                        drive.followTrajectorySequenceAsync(P1);
-                    }
-                    if (!drive.isBusy()) {
-                        currentState = BlueFront.State.SHOOT1;
+                case WAIT0:
+                    if(!drive.isBusy()) {
+                        drive.followTrajectorySequenceAsync(P0);
+                        currentState = State.Shoot1;
+                        waitTimer.reset();
                     }
 
 
-                case SHOOT1:
+                case Shoot1:
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
                     waitTimer.reset();
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
                         if (waitTimer.milliseconds() >= 2000){
                             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
-                            waitTimer.reset();
                         }
                     }
                     if(!drive.isBusy()) {
-                        currentState = BlueFront.State.MTBLP;
+                        currentState = State.MTSP;
                     }
+                    break;
 
 
+                case MTSP:
+                    if (!drive.isBusy()) {
+                        drive.followTrajectorySequenceAsync(P1);
+                        currentState = State.MTBLP;
+                    }
+                    break;
 
 
 
 
                 case MTBLP:
+                    drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
                     drive.followTrajectorySequenceAsync(P2);
-                    if (waitTimer.milliseconds() >= 200) {
-                        drive.followTrajectorySequenceAsync(P3);
-                    }
                     if(!drive.isBusy()){
+                        drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
                         currentState = State.MTBRP;
                     }
+                    break;
+
 
                 case MTBRP:
-                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
-                    drive.followTrajectorySequenceAsync(P1);
                     if(!drive.isBusy()) {
-                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
-                        drive.followTrajectorySequenceAsync(P2);
+                        drive.followTrajectorySequenceAsync(P3);
+                        currentState = State.Shoot2;
                     }
-                case SHOOT2:
+                    break;
+
+
+                case Shoot2:
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
                     waitTimer.reset();
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
@@ -201,32 +272,44 @@ public class BlueFront extends LinearOpMode { //updated
                         }
                     }
                     if(!drive.isBusy()) {
-                        currentState = State.END;
+                        currentState = State.End;
                     }
+                    break;
 
 
-                case END:
-                    drive.followTrajectorySequenceAsync(P4);
+                case End:
                     if(!drive.isBusy()) {
-                        break;
+                        drive.followTrajectorySequenceAsync(P4);
                     }
-
-
+                    break;
             }
+
+
+
+
+
+
 
 
             drive.update();
 
 
+
+
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
-            //drive.getDCExpansionHubsLIS().update(getDt());
-            drive.robot.getDCLiftSubsystem().update(getDt());
-            drive.robot.getDCIntakeSubsystem().update(getDt());
-            drive.robot.getDCShooterSubsystem().update(getDt());
+            drive.getExpansionHubs().update(getDt());
+            //drive.robot.getDCLiftSubsystem().update(getDt());
+//            drive.robot.getDCIntakeSubsystem().update(getDt());
+
+
 
 
             telemetry.update();
         }
+
+
+
+
 
 
 
@@ -238,14 +321,20 @@ public class BlueFront extends LinearOpMode { //updated
     }
 
 
+
+
     public static void setUpdateRuntime(TimeProfiler updaRuntime) {
         updateRuntime = updaRuntime;
     }
 
 
+
+
     public static double getDt() {
         return dt;
     }
+
+
 
 
     public static void setDt(double pdt) {

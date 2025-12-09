@@ -6,16 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 
 
-@Autonomous(name = "Red back TEST", group = "Pixel")
-public class TestRBIntake extends LinearOpMode { //updated
+@Autonomous(name = "Blue back Moving", group = "Pixel")
+public class TestBBMoving extends LinearOpMode { //updated
 
 
 
@@ -31,11 +29,11 @@ public class TestRBIntake extends LinearOpMode { //updated
 
 
     public static double DISTANCE = 5;
-    static final Vector2d path0 = new Vector2d(-46,46); //gets ready to shoot artifacts
-//    static final Vector2d path1 = new Vector2d(-12,24); //gets ready to intake artifacts
-//    static final Vector2d path2 = new Vector2d(-12,60); //intakes artifacts
-//    static final Vector2d path3 = new Vector2d(-46,46); //gets ready to shoot artifacts
-    static final Vector2d path1 = new Vector2d(-12,50); // parks outside of the zone
+    static final Vector2d path0 = new Vector2d(-46,-46); //gets ready to shoot artifacts
+//    static final Vector2d path1 = new Vector2d(-12,-24); //gets ready to intake artifacts
+//    static final Vector2d path2 = new Vector2d(-12,-60); //intakes artifacts
+//    static final Vector2d path3 = new Vector2d(-46,-46); //gets ready to shoot artifacts
+    static final Vector2d path1 = new Vector2d(-12,-50); // parks outside of the zone
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -58,10 +56,10 @@ public class TestRBIntake extends LinearOpMode { //updated
     }
 
 
-    TestRBIntake.State currentState = State.IDLE;
+    TestBBMoving.State currentState = State.IDLE;
 
 
-    Pose2d startPoseRL = new Pose2d(-50.5, 50.25, Math.toRadians(120));
+    Pose2d startPoseRL = new Pose2d(-50.5, -50.25, Math.toRadians(120));
     //lift test needs to be done (values are estimated/inaccurate)
 
 
@@ -151,7 +149,7 @@ public class TestRBIntake extends LinearOpMode { //updated
                 case WAIT0:
                     if(!drive.isBusy()) {
                         drive.followTrajectorySequenceAsync(P0);
-                        currentState = State.Shoot1;
+                        currentState = State.MTSP;
                         waitTimer.reset();
                     }
 
@@ -167,31 +165,31 @@ public class TestRBIntake extends LinearOpMode { //updated
 //                        currentState = State.MTSP;
 //                    }
 //                    break;
-//
+
 //                case MTSP:
 //                    if (!drive.isBusy()) {
 //                        drive.followTrajectorySequenceAsync(P1);
 //                        currentState = State.MTBLP;
 //                    }
 //                    break;
-//
-//
+
+
 //                case MTBLP:
-//                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
-//                    drive.followTrajectorySequenceAsync(P2);
+////                  drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
 //                    if(!drive.isBusy()){
-//                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+//                        drive.followTrajectorySequenceAsync(P2);
+//                        //drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
 //                        currentState = State.MTBRP;
 //                    }
 //                    break;
-//
+
 //                case MTBRP:
 //                    if(!drive.isBusy()) {
 //                        drive.followTrajectorySequenceAsync(P3);
-//                        currentState = State.Shoot2;
+//                        currentState = State.End;
 //                    }
 //                    break;
-//
+
 //                case Shoot2:
 //                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
 //                    waitTimer.reset();

@@ -6,16 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 
 
-@Autonomous(name = "Red back TEST", group = "Pixel")
-public class TestRBIntake extends LinearOpMode { //updated
+@Autonomous(name = "Red back Moving", group = "Pixel")
+public class TestRBMoving extends LinearOpMode { //updated
 
 
 
@@ -58,7 +56,7 @@ public class TestRBIntake extends LinearOpMode { //updated
     }
 
 
-    TestRBIntake.State currentState = State.IDLE;
+    TestRBMoving.State currentState = State.IDLE;
 
 
     Pose2d startPoseRL = new Pose2d(-50.5, 50.25, Math.toRadians(120));
@@ -151,7 +149,7 @@ public class TestRBIntake extends LinearOpMode { //updated
                 case WAIT0:
                     if(!drive.isBusy()) {
                         drive.followTrajectorySequenceAsync(P0);
-                        currentState = State.Shoot1;
+                        currentState = State.End;
                         waitTimer.reset();
                     }
 
@@ -167,7 +165,7 @@ public class TestRBIntake extends LinearOpMode { //updated
 //                        currentState = State.MTSP;
 //                    }
 //                    break;
-//
+
 //                case MTSP:
 //                    if (!drive.isBusy()) {
 //                        drive.followTrajectorySequenceAsync(P1);
@@ -177,10 +175,10 @@ public class TestRBIntake extends LinearOpMode { //updated
 //
 //
 //                case MTBLP:
-//                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
-//                    drive.followTrajectorySequenceAsync(P2);
+////                  drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
 //                    if(!drive.isBusy()){
-//                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+//                        drive.followTrajectorySequenceAsync(P2);
+//                        //drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
 //                        currentState = State.MTBRP;
 //                    }
 //                    break;
@@ -188,10 +186,10 @@ public class TestRBIntake extends LinearOpMode { //updated
 //                case MTBRP:
 //                    if(!drive.isBusy()) {
 //                        drive.followTrajectorySequenceAsync(P3);
-//                        currentState = State.Shoot2;
+//                        currentState = State.End;
 //                    }
 //                    break;
-//
+
 //                case Shoot2:
 //                    drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
 //                    waitTimer.reset();
