@@ -110,8 +110,10 @@ public class TestBBIntake extends LinearOpMode { //updated
                .build();
        */
         drive.getExpansionHubs().update(getDt());
-//        drive.robot.getDCIntakeSubsystem().update(getDt());
-        //drive.robot.getITDClawStateMachine().update(getDt());
+        drive.robot.getDCintakeSubsystem().update(getDt());
+        drive.robot.getDCShooterSubsystem().update(getDt());
+        drive.robot.getDCAgitatorSubsystem().update(getDt());
+        drive.robot.getDCServoSubsystem().update(getDt());
 
 
 
