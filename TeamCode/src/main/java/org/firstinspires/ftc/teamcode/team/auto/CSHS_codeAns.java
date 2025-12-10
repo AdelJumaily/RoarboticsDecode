@@ -9,17 +9,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.team.PoseStorage;
-import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.DCServoStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCAgitatorStateMachine;
-
+import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
+import org.firstinspires.ftc.teamcode.team.states.DCServoStateMachine;
+import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 
 
 @Autonomous(name = "CSHS code", group = "Pixel")
-public class CSHS_code extends LinearOpMode {
+public class CSHS_codeAns extends LinearOpMode {
 
 
 
@@ -47,7 +44,10 @@ public class CSHS_code extends LinearOpMode {
 //Create the paths the robot goes to
 
 
-    static final Vector2d path0 = new Vector2d(67,67);
+    static final Vector2d path0 = new Vector2d(60,12);
+    static final Vector2d path1 = new Vector2d(60,60);
+    static final Vector2d path2 = new Vector2d(5,60);
+    static final Vector2d path3 = new Vector2d(60,108);
 
 
 
@@ -85,7 +85,10 @@ public class CSHS_code extends LinearOpMode {
 
 
     enum State {
-        Example,
+        Start,
+        Intake,
+        Shoot,
+        End
 
 
 
@@ -103,7 +106,7 @@ public class CSHS_code extends LinearOpMode {
 
 
 
-    Pose2d startPoseRL = new Pose2d(0, 0, Math.toRadians(0));
+    Pose2d startPoseRL = new Pose2d(12, 12, Math.toRadians(0));
 
 
 
@@ -121,11 +124,17 @@ public class CSHS_code extends LinearOpMode {
 //Create the Trajectory Sequence Path Builder
 
 
-     //     TrajectorySequence Example = drive.trajectorySequenceBuilder(startPoseRL)
-        //                .lineTo(Example)
-     //             .turn(Math.toRadians(120))
-      //             .build();
+        TrajectorySequence P1 = drive.trajectorySequenceBuilder(startPoseRL)
+                .lineTo(path0)
+                .lineTo(path1)
+                .turn(Math.toRadians(90))
+                .build();
 
+        TrajectorySequence P2 =  drive.trajectorySequenceBuilder(P1.end())
+                .lineTo(path2)
+                .turn(Math.toRadians(-180))
+                .lineTo(path3)
+                .build();
 
 //—-------------------------------------------------------------------------
 
@@ -152,7 +161,7 @@ public class CSHS_code extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        State currentState = State.Example;
+        State currentState = State.Start;
 
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -164,20 +173,44 @@ public class CSHS_code extends LinearOpMode {
             //create the cases
             switch (currentState) {
 
-                case Example:
+                case Start:
+                    while (!drive.isBusy()) {
+                        drive.followTrajectorySequenceAsync(P1);
+                        currentState = State.Intake;
+                    }
 
+                    break;
 
+                case Intake:
+                    while (!drive.isBusy()) {
+                        drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
+                        drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.Ajadate);
+                        drive.followTrajectorySequenceAsync(P2);
+                        currentState = State.Shoot;
+                    }
+                    break;
 
-
-
-
+                case Shoot:
+                    while (!drive.isBusy()) {
+                        drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+                        drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
+                        drive.robot.getDCServoSubsystem().getStateMachine().updateState(DCServoStateMachine.State.Up);
+                    }
+                    break;
+                case End:
+                    while (!drive.isBusy()) {
+                        drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
+                        drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+                        drive.robot.getDCServoSubsystem().getStateMachine().updateState(DCServoStateMachine.State.Down);
+                    }
+                    break;
 //—-------------------------------------------------------------------------
 
-
+            }
                     drive.update();
                     drive.getExpansionHubs().update(getDt());
                     telemetry.update();
-            }
+
 
 
             drive.setMotorPowers(0.0, 0.0, 0.0, 0.0);
