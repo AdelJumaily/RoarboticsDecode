@@ -10,7 +10,7 @@ public class DCServoSubsystem implements ISubsystem<DCServoStateMachine, DCServo
 
 
     public DCServoSubsystem(RevServo liftServo){
-        setServoMachine(new DCServoStateMachine());
+        setDCServoStateMachine(new DCServoStateMachine());
         setGripperServo(liftServo);
     }
 
@@ -36,7 +36,7 @@ public class DCServoSubsystem implements ISubsystem<DCServoStateMachine, DCServo
 
     @Override
     public String getName() {
-        return "Gripper Subsystem";
+        return "Servo Subsystem";
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DCServoSubsystem implements ISubsystem<DCServoStateMachine, DCServo
         getliftServo().setPosition(getState().getPosition());
     }
 
-    public static void setServoMachine(DCServoStateMachine DCservoStateMachine) {
+    public static void setDCServoStateMachine(DCServoStateMachine DCservoStateMachine) {
         DCServoSubsystem.DCservoStateMachine = DCservoStateMachine;
     }
 

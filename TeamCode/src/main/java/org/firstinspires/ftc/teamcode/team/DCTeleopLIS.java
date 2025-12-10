@@ -113,6 +113,7 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
         }
 
         //Servo
+        telemetry.addData("Servo State: ", drive.robot.getDCservoSubsystem().getStateMachine().getState());
         if (getEnhancedGamepad1().isDpadUpJustPressed()) {
             drive.robot.getDCservoSubsystem().getStateMachine().updateState(DCServoStateMachine.State.Up);
         }
