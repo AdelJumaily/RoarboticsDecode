@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCExpansionHubsLIS;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCLiftSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCShooterSubsystem;
-import org.firstinspires.ftc.teamcode.team.subsystems.DCAjadatorSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCAgitatorSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCServoSubsystem;
@@ -43,10 +43,10 @@ public class DCAutoRobotLIS {
     private DCExpansionHubsLIS dcExpansionHubsLIS;
     private DCLiftSubsystem DCliftSubsystem;
     private DCShooterSubsystem DCshooterSubsystem;
-    private DCAjadatorSubsystem DCajadatorSubsystem;
+    private DCAgitatorSubsystem DCagitatorSubsystem;
     private DCServoSubsystem DCservoSubsystem;
-    private DCIntakeSubsystem DCintakeSubsystem;
 
+    private DCIntakeSubsystem DCintakeSubsystem;
 
 
     private RevMotor[] motors;
@@ -62,19 +62,19 @@ public class DCAutoRobotLIS {
         setMotors(new RevMotor[] {
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), false, false, false, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION()),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Ajadator")), false, false, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION()),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("agitator")), false, false, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION()),
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Shooter")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
         });
 
         setServos(new RevServo[] {
-                new RevServo((ExpansionHubServo)(hardwareMap.get("Servo"))),
+                new RevServo((ExpansionHubServo)(hardwareMap.get("Lifter"))),
         });
 
         setDCLiftSubsystem(new DCLiftSubsystem(getMotors()[0]));
         setDCintakeSubsystem(new DCIntakeSubsystem(getMotors()[1]));
         setDCShooterSubsystem(new DCShooterSubsystem(getMotors()[2]));
-        setDCAjadatorSubsystem(new DCAjadatorSubsystem(getMotors()[3]));
-        setDCservoSubsystem(new DCServoSubsystem(getServos()[0]));
+        setDCAgitatorSubsystem(new DCAgitatorSubsystem(getMotors()[3]));
+        setDCServoSubsystem(new DCServoSubsystem(getServos()[0]));
         setMatchRuntime(new TimeProfiler(false));
     }
 
@@ -127,18 +127,18 @@ public class DCAutoRobotLIS {
         this.DCliftSubsystem = DCliftSubsystem;
     }
 
-    public DCAjadatorSubsystem getDCajadatorSubsystem() {
-        return DCajadatorSubsystem;
+    public DCAgitatorSubsystem getDCAgitatorSubsystem() {
+        return DCagitatorSubsystem;
     }
 
-    public void setDCAjadatorSubsystem(DCAjadatorSubsystem DCajadatorSubsystem){
-        this.DCajadatorSubsystem = DCajadatorSubsystem;
+    public void setDCAgitatorSubsystem(DCAgitatorSubsystem DCajadatorSubsystem){
+        this.DCagitatorSubsystem = DCajadatorSubsystem;
     }
-    public DCServoSubsystem getDCservoSubsystem() {
+    public DCServoSubsystem getDCServoSubsystem() {
         return DCservoSubsystem;
     }
 
-    public void setDCservoSubsystem(DCServoSubsystem DCservoSubsystem){
+    public void setDCServoSubsystem(DCServoSubsystem DCservoSubsystem){
         this.DCservoSubsystem = DCservoSubsystem;
     }
 

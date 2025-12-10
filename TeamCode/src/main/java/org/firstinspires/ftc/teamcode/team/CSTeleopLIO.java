@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.team.states.IntakeStateMachine;
  * @see UltimateGoalRobot
  */
 
-@TeleOp(name = "CS TeleOp LIO", group = "Main")
+//@TeleOp(name = "CS TeleOp LIO", group = "Main")
 public class CSTeleopLIO extends CSTeleopRobotLIO {
 
     private double currentTime = 0; // keep track of current time

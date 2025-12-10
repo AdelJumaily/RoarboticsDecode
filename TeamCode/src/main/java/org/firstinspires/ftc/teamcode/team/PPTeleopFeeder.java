@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.team.states.FeederConeGripperStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.VirtualFourBarStateMachine;
 import org.firstinspires.ftc.teamcode.team.subsystems.Feeder;
 
-@TeleOp(name = "PP TeleOp Feeder", group = "Main")
+//@TeleOp(name = "PP TeleOp Feeder", group = "Main")
 public class PPTeleopFeeder extends PPTeleopRobotFeeder {
     private double speedMultiplier = 0.7;
     //these are based on LiftTest

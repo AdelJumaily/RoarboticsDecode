@@ -11,7 +11,7 @@ public class DCServoStateMachine extends TimedState<DCServoStateMachine.State> {
 
     @Override
     public String getName() {
-        return "Claw Arm State Machine";
+        return "Servo State Machine";
     }
 
     @Override
@@ -20,7 +20,7 @@ public class DCServoStateMachine extends TimedState<DCServoStateMachine.State> {
     }
 
     public enum State implements Namable {
-        Down("Down",0d), Up("Up", -6d);
+        Down("Down",0d), Up("Up", 0.2d);
 
         private final String name;
         private final double Position;

@@ -20,7 +20,7 @@ public class DroneStateMachine extends TimedState<DroneStateMachine.State> {
     }
 
     public enum State implements Namable {
-        OPEN("Open",0d), CLOSE("Close", 0.4d);
+        OPEN("Open",0.2d), CLOSE("Close", 0.4d);
 
         private final String name;
         private final double Position;
