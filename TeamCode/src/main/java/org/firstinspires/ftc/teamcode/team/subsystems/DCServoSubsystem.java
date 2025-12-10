@@ -50,8 +50,8 @@ public class DCServoSubsystem implements ISubsystem<DCServoStateMachine, DCServo
         getliftServo().setPosition(getState().getPosition());
     }
 
-    public static void setDCServoStateMachine(DCServoStateMachine DCservoStateMachine) {
-        DCServoSubsystem.DCservoStateMachine = DCservoStateMachine;
+    public static void setDCServoStateMachine(DCServoStateMachine DCServoStateMachine) {
+        DCServoSubsystem.DCservoStateMachine = DCServoStateMachine;
     }
 
     public RevServo getliftServo() {

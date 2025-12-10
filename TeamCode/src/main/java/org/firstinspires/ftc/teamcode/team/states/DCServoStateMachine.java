@@ -20,7 +20,7 @@ public class DCServoStateMachine extends TimedState<DCServoStateMachine.State> {
     }
 
     public enum State implements Namable {
-        Down("Down",0.3d), Up("Up", 0.5d);
+        Down("Down",0d), Up("Up", 0.2d);
 
         private final String name;
         private final double Position;
