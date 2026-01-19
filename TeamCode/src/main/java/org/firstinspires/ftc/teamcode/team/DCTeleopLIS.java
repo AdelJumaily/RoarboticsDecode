@@ -115,14 +115,16 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
             drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
         }
 
-        //Servo
-        telemetry.addData("Servo State: ", drive.robot.getDCServoSubsystem().getStateMachine().getState());
-        if (getEnhancedGamepad1().isDpadUpJustPressed()) {
-            drive.robot.getDCServoSubsystem().getStateMachine().updateState(DCServoStateMachine.State.Up);
-        }
-        if (getEnhancedGamepad1().isDpadDownJustPressed()) {
-            drive.robot.getDCServoSubsystem().getStateMachine().updateState(DCServoStateMachine.State.Down);
-        }
+
+
+//        //Servo
+//        telemetry.addData("Servo State: ", drive.robot.getDCServoSubsystem().getStateMachine().getState());
+//        if (getEnhancedGamepad1().isDpadUpJustPressed()) {
+//            drive.robot.getDCServoSubsystem().getStateMachine().updateState(DCServoStateMachine.State.Up);
+//        }
+//        if (getEnhancedGamepad1().isDpadDownJustPressed()) {
+//            drive.robot.getDCServoSubsystem().getStateMachine().updateState(DCServoStateMachine.State.Down);
+//        }
 
 
 

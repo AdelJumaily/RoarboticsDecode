@@ -22,8 +22,6 @@ import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 public class BlueFront extends LinearOpMode { //updated
 
 
-
-
     DCBaseLIS drive;
     private static double dt;
     private static TimeProfiler updateRuntime;
