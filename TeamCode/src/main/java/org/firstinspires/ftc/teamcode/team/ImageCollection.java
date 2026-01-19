@@ -15,7 +15,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 //TODO: copy libOpenCvAndroid453.so from /doc/native_libs to FIRST on robot controller
 
 @TeleOp(name="Image Collection", group="Collection")
-public class ImageCollection extends PPRobot {
+public class ImageCollection extends DCRobot {
 
     /* Declare OpMode members. */
 
