@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.team.states.DCServoStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
 
 
-@Autonomous(name = "CSHS code", group = "Pixel")
+@Autonomous(name = "CSHS codeAns", group = "Pixel")
 public class CSHS_codeAns extends LinearOpMode {
 
 
