@@ -246,10 +246,10 @@ public class TestRFIntake extends LinearOpMode { //updated
 
 
                 case MTBLP:
-                    drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
+                    drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
                     drive.followTrajectorySequenceAsync(P2);
                     if(!drive.isBusy()){
-                        drive.robot.getDCIntakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
+                        drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
                         currentState = State.MTBRP;
                     }
                     break;

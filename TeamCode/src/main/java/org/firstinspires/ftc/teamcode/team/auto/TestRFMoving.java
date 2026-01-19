@@ -12,10 +12,6 @@ import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
-
-
 
 
 @Autonomous(name = "Red front Move", group = "Pixel")

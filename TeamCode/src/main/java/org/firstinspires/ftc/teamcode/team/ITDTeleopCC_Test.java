@@ -39,7 +39,7 @@ import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
  *          Dpad-down                   ->
  *
  */
-@TeleOp(name = "ITD TeleOp CC", group = "Main")
+//@TeleOp(name = "ITD TeleOp CC", group = "Main")
 public class ITDTeleopCC_Test extends ITDTeleopRobotCHALLC {
 
     private double currentTime = 0; // keep track of current time

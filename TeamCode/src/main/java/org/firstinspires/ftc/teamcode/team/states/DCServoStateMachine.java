@@ -4,14 +4,14 @@ import org.firstinspires.ftc.teamcode.lib.util.Namable;
 import org.firstinspires.ftc.teamcode.lib.util.Time;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 
-public class DroneStateMachine extends TimedState<DroneStateMachine.State> {
-    public DroneStateMachine() {
-        super(State.OPEN);
+public class DCServoStateMachine extends TimedState<DCServoStateMachine.State> {
+    public DCServoStateMachine() {
+        super(State.Down);
     }
 
     @Override
     public String getName() {
-        return "Claw State Machine";
+        return "Servo State Machine";
     }
 
     @Override
@@ -20,7 +20,7 @@ public class DroneStateMachine extends TimedState<DroneStateMachine.State> {
     }
 
     public enum State implements Namable {
-        OPEN("Open",0.2d), CLOSE("Close", 0.4d);
+        Down("Down",0d), Up("Up", 0.2d);
 
         private final String name;
         private final double Position;

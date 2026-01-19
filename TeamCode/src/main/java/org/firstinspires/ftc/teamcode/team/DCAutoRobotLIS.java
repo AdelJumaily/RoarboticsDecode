@@ -11,10 +11,12 @@ import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubMotor;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubServo;
 import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCExpansionHubsLIS;
-import org.firstinspires.ftc.teamcode.team.subsystems.DCIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCLiftSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DCShooterSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCAgitatorSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
+import org.firstinspires.ftc.teamcode.team.subsystems.DCServoSubsystem;
 
 
 /**
@@ -41,6 +43,9 @@ public class DCAutoRobotLIS {
     private DCExpansionHubsLIS dcExpansionHubsLIS;
     private DCLiftSubsystem DCliftSubsystem;
     private DCShooterSubsystem DCshooterSubsystem;
+    private DCAgitatorSubsystem DCagitatorSubsystem;
+    private DCServoSubsystem DCservoSubsystem;
+
     private DCIntakeSubsystem DCintakeSubsystem;
 
 
@@ -57,19 +62,23 @@ public class DCAutoRobotLIS {
         setMotors(new RevMotor[] {
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), false, false, false, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION()),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("agitator")), false, false, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION()),
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Shooter")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
         });
 
-//        setServos(new RevServo[] {
-//                new RevServo((ExpansionHubServo)(hardwareMap.get("Outtake"))),
-//                new RevServo((ExpansionHubServo)(hardwareMap.get("Drone")))
-//        });
+        setServos(new RevServo[] {
+                new RevServo((ExpansionHubServo)(hardwareMap.get("Lifter"))),
+        });
 
         setDCLiftSubsystem(new DCLiftSubsystem(getMotors()[0]));
-        setDCIntakeSubsystem(new DCIntakeSubsystem(getMotors()[1]));
+        setDCintakeSubsystem(new DCIntakeSubsystem(getMotors()[1]));
         setDCShooterSubsystem(new DCShooterSubsystem(getMotors()[2]));
+        setDCAgitatorSubsystem(new DCAgitatorSubsystem(getMotors()[3]));
+        setDCServoSubsystem(new DCServoSubsystem(getServos()[0]));
         setMatchRuntime(new TimeProfiler(false));
     }
+
+
     public RevMotor[] getMotors() {
         return motors;
     }
@@ -118,12 +127,19 @@ public class DCAutoRobotLIS {
         this.DCliftSubsystem = DCliftSubsystem;
     }
 
-    public DCIntakeSubsystem getDCIntakeSubsystem() {
-        return DCintakeSubsystem;
+    public DCAgitatorSubsystem getDCAgitatorSubsystem() {
+        return DCagitatorSubsystem;
     }
 
-    public void setDCIntakeSubsystem(DCIntakeSubsystem intakeSubsystem){
-        this.DCintakeSubsystem = intakeSubsystem;
+    public void setDCAgitatorSubsystem(DCAgitatorSubsystem DCajadatorSubsystem){
+        this.DCagitatorSubsystem = DCajadatorSubsystem;
+    }
+    public DCServoSubsystem getDCServoSubsystem() {
+        return DCservoSubsystem;
+    }
+
+    public void setDCServoSubsystem(DCServoSubsystem DCservoSubsystem){
+        this.DCservoSubsystem = DCservoSubsystem;
     }
 
     public DCShooterSubsystem getDCShooterSubsystem() {
@@ -132,6 +148,13 @@ public class DCAutoRobotLIS {
 
     public void setDCShooterSubsystem(DCShooterSubsystem DCshooterSubsystem){
         this.DCshooterSubsystem = DCshooterSubsystem;
+    }
+    public DCIntakeSubsystem getDCintakeSubsystem() {
+        return DCintakeSubsystem;
+    }
+
+    public void setDCintakeSubsystem(DCIntakeSubsystem DCintakeSubsystem){
+        this.DCintakeSubsystem = DCintakeSubsystem;
     }
 
     public TimeProfiler getMatchRuntime() {
