@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.team.auto;
+package org.firstinspires.ftc.teamcode.team.auto.blue;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.PoseStorage;
+import org.firstinspires.ftc.teamcode.team.auto.DCBaseLIS;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 
 
@@ -18,7 +19,6 @@ import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.Trajector
 
 @Autonomous(name = "Emergency Blue", group = "Pixel")
 public class EmergencyBlue extends LinearOpMode { //updated
-
 
 
 
@@ -40,16 +40,12 @@ public class EmergencyBlue extends LinearOpMode { //updated
 
 
 
-
     public static double DISTANCE = 5;
     static final Vector2d path0 = new Vector2d(72,-50); // gets out of the way
 
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-
-
-
 
 
 
@@ -89,8 +85,6 @@ public class EmergencyBlue extends LinearOpMode { //updated
 
 
 
-
-
     public void runOpMode() throws InterruptedException {
         setUpdateRuntime(new TimeProfiler(false));
 
@@ -122,9 +116,6 @@ public class EmergencyBlue extends LinearOpMode { //updated
         drive.getExpansionHubs().update(getDt());
 //        drive.robot.getDCIntakeSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
-
-
-
 
 
 
@@ -251,9 +242,6 @@ public class EmergencyBlue extends LinearOpMode { //updated
 
 
 
-
-
-
             drive.update();
 
 
@@ -269,9 +257,6 @@ public class EmergencyBlue extends LinearOpMode { //updated
 
             telemetry.update();
         }
-
-
-
 
 
 
@@ -304,4 +289,3 @@ public class EmergencyBlue extends LinearOpMode { //updated
         dt = pdt;
     }
 }
-

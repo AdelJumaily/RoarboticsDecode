@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.team.auto;
+package org.firstinspires.ftc.teamcode.team.auto.red;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -7,19 +7,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
+import org.firstinspires.ftc.teamcode.team.auto.DCBaseLIS;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
+import org.firstinspires.ftc.teamcode.team.states.DCAgitatorStateMachine;
 
 
+@Autonomous(name = "Red Front", group = "Pixel")
 
-
-@Autonomous(name = "Blue front", group = "Pixel")
-
-public class BlueFront extends LinearOpMode { //updated
+public class RedFront extends LinearOpMode { //updated
 
 
 
@@ -62,7 +61,7 @@ public class BlueFront extends LinearOpMode { //updated
     }
 
 
-    BlueFront.State currentState = BlueFront.State.WAIT0;
+    RedFront.State currentState = RedFront.State.WAIT0;
 
 
     Pose2d startPoseRL = new Pose2d (-24, -72);
@@ -79,6 +78,7 @@ public class BlueFront extends LinearOpMode { //updated
         drive.setPoseEstimate(startPoseRL);
         drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
         drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+        drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
         // tells the robot where it could go does not actually move the robot
         TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
                 .lineTo(path0) // MTSP
@@ -142,7 +142,7 @@ public class BlueFront extends LinearOpMode { //updated
 
                 case WAIT0:
                     if (waitTimer.milliseconds() >= 1000)
-                        currentState = BlueFront.State.MTSP;
+                        currentState = RedFront.State.MTSP;
                     waitTimer.reset();
                     telemetry.addLine("in the wait0 state");
                     break;
@@ -154,7 +154,7 @@ public class BlueFront extends LinearOpMode { //updated
                         drive.followTrajectorySequenceAsync(P1);
                     }
                     if (!drive.isBusy()) {
-                        currentState = BlueFront.State.SHOOT1;
+                        currentState = RedFront.State.SHOOT1;
                     }
 
 
@@ -168,9 +168,8 @@ public class BlueFront extends LinearOpMode { //updated
                         }
                     }
                     if(!drive.isBusy()) {
-                        currentState = BlueFront.State.MTBLP;
+                        currentState = RedFront.State.MTBLP;
                     }
-
 
 
 
@@ -252,4 +251,3 @@ public class BlueFront extends LinearOpMode { //updated
         dt = pdt;
     }
 }
-
