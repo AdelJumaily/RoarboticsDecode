@@ -37,7 +37,7 @@ import org.firstinspires.ftc.teamcode.team.subsystems.DCServoSubsystem;
  */
 public class DCAutoRobotLIS {
     private TimeProfiler matchRuntime;
-    private RobotStateEstimator robotStateEstimator;
+   // private RobotStateEstimator robotStateEstimator;
     private Drive drive;
     private DCExpansionHubsLIS dcExpansionHubsLIS;
     private DCLiftSubsystem DCliftSubsystem;
@@ -102,13 +102,13 @@ public class DCAutoRobotLIS {
         this.dcExpansionHubsLIS = dExpansionHubsLIS;
     }
 
-    public RobotStateEstimator getRobotStateEstimator() {
-        return robotStateEstimator;
-    }
+ //   public RobotStateEstimator getRobotStateEstimator() {
+ //       return robotStateEstimator;
+//}
 
-    public void setRobotStateEstimator(RobotStateEstimator robotStateEstimator) {
-        this.robotStateEstimator = robotStateEstimator;
-    }
+//public void setRobotStateEstimator(RobotStateEstimator robotStateEstimator) {
+ //       this.robotStateEstimator = robotStateEstimator;
+ //   }
 
     public Drive getDrive() {
         return drive;
@@ -164,12 +164,12 @@ public class DCAutoRobotLIS {
         this.matchRuntime = matchRuntime;
     }
 
-    public Pose2d getRobotPose() {
-        return getRobotStateEstimator().getPose();
-    }
+  //  public Pose2d getRobotPose() {
+  //      return getRobotStateEstimator().getPose();
+//}
 
-    public double getRobotSpeed() {
-        return getRobotStateEstimator().getVelocityPose().getTranslation().norm() +
-                Math.abs(getRobotStateEstimator().getVelocityPose().getRotation().getRadians());
-    }
+  //  public double getRobotSpeed() {
+//return getRobotStateEstimator().getVelocityPose().getTranslation().norm() +
+//Math.abs(getRobotStateEstimator().getVelocityPose().getRotation().getRadians());
+  //  }
 }
