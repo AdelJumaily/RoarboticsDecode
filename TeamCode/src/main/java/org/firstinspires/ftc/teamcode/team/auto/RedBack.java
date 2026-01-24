@@ -29,13 +29,16 @@ public class RedBack extends LinearOpMode { //updated
 
 
 
-    static final Vector2d path5 = new Vector2d(24,4.4); // Shooting position
-    static final Vector2d path0 = new Vector2d(-24,24); // Shooting position
-    static final Vector2d path1 = new Vector2d(-12, 24); // Move to pick up balls part 1
+
+
+
+    static final Vector2d path0 = new Vector2d(-45,41); // Shooting position
+    static final Vector2d path1 = new Vector2d(-12,31); // Move to pick up ball part 1
     static final Vector2d path2 = new Vector2d(-12,32); // Move to pick up balls part 2 (optional)
     static final Vector2d path3 = new Vector2d(-12,50); // Move to pick up balls part 3
-    static final Vector2d path4 = new Vector2d(-24,24);  // Shooting position
-    static final Vector2d path6 = new Vector2d(20,20); // Shooting position
+    static final Vector2d path4 = new Vector2d(-45,41);  // Shooting position
+    static final Vector2d path5 = new Vector2d(0,30); // Lever position part 1
+    static final Vector2d path6 = new Vector2d(0,50); // Lever position part 2
 
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -52,6 +55,7 @@ public class RedBack extends LinearOpMode { //updated
         MTBLP, // Moves the ball to left position
         MTBRP, // Moves the ball to right position
         SHOOT2, // Shoots 3 balls
+        MTLP,
         END
     }
 
@@ -59,7 +63,9 @@ public class RedBack extends LinearOpMode { //updated
     RedBack.State currentState = RedBack.State.WAIT0;
 
 
-    Pose2d startPoseRL = new Pose2d (-50.5, -50.25);
+
+
+    Pose2d startPoseRL = new Pose2d (-50.5, 50.25);
     //lift test needs to be done (values are estimated/inaccurate)
 
 
@@ -75,22 +81,16 @@ public class RedBack extends LinearOpMode { //updated
         drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
         drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
         // tells the robot where it could go does not actually move the robot
-        TrajectorySequence P5 = drive.trajectorySequenceBuilder(startPoseRL)
-                .lineTo(path5)
-                .turn(Math.toRadians(-30))
-                .build();
-
-
-        TrajectorySequence P0 = drive.trajectorySequenceBuilder(P5.end())
+        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
                 .lineTo(path0)
-                .turn(Math.toRadians(225)) // turns toward the baskets
+                .turn(Math.toRadians(180)) // turns toward the baskets
                 .build();
 
 
         TrajectorySequence P1 = drive.trajectorySequenceBuilder(P0.end())
-                .turn(Math.toRadians(45))
+                .turn(Math.toRadians(30))
                 .lineTo(path1)
-                .turn(Math.toRadians(90))
+                .turn(Math.toRadians(120))
                 .build();
 
 
@@ -105,13 +105,22 @@ public class RedBack extends LinearOpMode { //updated
 
 
         TrajectorySequence P4 = drive.trajectorySequenceBuilder(P3.end())
-                .turn(Math.toRadians(155))
+                .turn(Math.toRadians(105))
                 .lineTo(path4)
-                .turn(Math.toRadians(65))
+                .turn(Math.toRadians(120))
                 .build();
 
 
-        TrajectorySequence P6 = drive.trajectorySequenceBuilder(P4.end())
+
+        TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
+                .turn(Math.toRadians(30))
+                .lineTo(path5)
+                .turn(Math.toRadians(105))
+                .build();
+
+
+
+        TrajectorySequence P6 = drive.trajectorySequenceBuilder(P5.end())
                 .lineTo(path6)
                 .build();
 
@@ -163,6 +172,9 @@ public class RedBack extends LinearOpMode { //updated
 
 
                 case MTSP:
+                    //                    if (waitTimer.milliseconds() >= 500) {
+//                        drive.followTrajectorySequenceAsync(P1);
+//                    }
                     if (!drive.isBusy()) {
                         currentState = RedBack.State.SHOOT1;
                         waitTimer.reset();
@@ -191,10 +203,11 @@ public class RedBack extends LinearOpMode { //updated
                         drive.followTrajectorySequenceAsync(P2);
                         while(drive.isBusy()) {
                         }
-                        currentState = State.MTBRP;
                         drive.followTrajectorySequenceAsync(P3);
+                        currentState = State.MTBRP;
                     }
                     break;
+
 
                 case MTBRP:
                     drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
@@ -217,17 +230,19 @@ public class RedBack extends LinearOpMode { //updated
                             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
                             drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
                             waitTimer.reset();
-                            currentState = State.END;
+                            currentState = State.MTLP;
                         }
                     }
                     break;
 
+                case MTLP:
+                    drive.followTrajectorySequenceAsync(P5);
+                    while(drive.isBusy()){}
+                    drive.followTrajectorySequenceAsync(P6);
+                    currentState = State.END;
 
                 case END:
-                    drive.followTrajectorySequenceAsync(P6);
-                    if(!drive.isBusy()) {
                         break;
-                    }
 
 
             }
@@ -267,3 +282,4 @@ public class RedBack extends LinearOpMode { //updated
         dt = pdt;
     }
 }
+
