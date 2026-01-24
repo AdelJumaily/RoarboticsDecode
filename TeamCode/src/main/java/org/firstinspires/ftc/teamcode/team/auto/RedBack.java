@@ -153,22 +153,21 @@ public class RedBack extends LinearOpMode { //updated
 
 
                 case WAIT0:
-                    if (waitTimer.milliseconds() >= 2000)
+                    if (waitTimer.milliseconds() >= 2000) {
+                        drive.followTrajectorySequenceAsync(P0);
                         currentState = RedBack.State.MTSP;
-                    waitTimer.reset();
+                        waitTimer.reset();
+                    }
                     telemetry.addLine("in the wait0 state");
                     break;
 
 
                 case MTSP:
-                    drive.followTrajectorySequenceAsync(P0);
-//                    if (waitTimer.milliseconds() >= 500) {
-//                        drive.followTrajectorySequenceAsync(P1);
-//                    }
                     if (!drive.isBusy()) {
                         currentState = RedBack.State.SHOOT1;
                         waitTimer.reset();
                     }
+                    break;
 
 
                 case SHOOT1:
@@ -185,6 +184,7 @@ public class RedBack extends LinearOpMode { //updated
                             currentState = RedBack.State.MTBLP;
                         }
                     }
+                    break;
 
                 case MTBLP:
                     if(!drive.isBusy()) {
@@ -192,24 +192,26 @@ public class RedBack extends LinearOpMode { //updated
                         while(drive.isBusy()) {
                         }
                         currentState = State.MTBRP;
+                        drive.followTrajectorySequenceAsync(P3);
                     }
+                    break;
 
                 case MTBRP:
                     drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
-                    drive.followTrajectorySequenceAsync(P3);
                     if(!drive.isBusy()) {
                         drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.IDLE);
                         drive.followTrajectorySequenceAsync(P4);
                         currentState = State.SHOOT2;
 
                     }
+                    break;
+
                 case SHOOT2:
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
                     waitTimer.reset();
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
                         if (waitTimer.milliseconds() >= 800){
                         drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.Ajadate);
-                        waitTimer.reset();
                     }
                         if (waitTimer.milliseconds() >= 1300){
                             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
@@ -218,6 +220,8 @@ public class RedBack extends LinearOpMode { //updated
                             currentState = State.END;
                         }
                     }
+                    break;
+
 
                 case END:
                     drive.followTrajectorySequenceAsync(P6);
@@ -263,4 +267,3 @@ public class RedBack extends LinearOpMode { //updated
         dt = pdt;
     }
 }
-

@@ -57,7 +57,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
 //    public static double LATERAL_MULTIPLIER = 1; //1.36202669572, 1.39460288683, 1.3361838589
 //    public static double LATERAL_MULTIPLIER = 60.0/77.0;
-    public static double LATERAL_MULTIPLIER = 1.49514893317; //12/9
+    public static double LATERAL_MULTIPLIER = 1; //12/9, 1.49514893317
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -118,6 +118,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         //
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
+
 
         leftFront = hardwareMap.get(DcMotorEx.class, "LF");
         leftRear = hardwareMap.get(DcMotorEx.class, "LR");
@@ -332,6 +333,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         // Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
         // flat on a surface
 
-        return (double) imu.getAngularVelocity().zRotationRate;
+        return (double) imu.getAngularVelocity().xRotationRate;
     }
 }
