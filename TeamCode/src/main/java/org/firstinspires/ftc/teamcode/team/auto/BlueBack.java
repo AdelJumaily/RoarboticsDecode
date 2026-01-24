@@ -185,7 +185,7 @@ public class BlueBack extends LinearOpMode { //updated
                     drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
                         if (waitTimer.milliseconds() >= 500){
-                            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.Ajadate);
+                            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.AGITATE);
                         }
                         if (waitTimer.milliseconds() >= 2000){
                             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
@@ -223,7 +223,7 @@ public class BlueBack extends LinearOpMode { //updated
                     waitTimer.reset();
                     while (drive.robot.getDCShooterSubsystem().getStateMachine().getState() == DCShooterStateMachine.State.SHOOT) {
                         if (waitTimer.milliseconds() >= 800){
-                            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.Ajadate);
+                            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.AGITATE);
                         }
                         if (waitTimer.milliseconds() >= 1300){
                             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);

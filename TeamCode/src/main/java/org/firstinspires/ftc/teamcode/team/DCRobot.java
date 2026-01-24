@@ -65,21 +65,21 @@ public abstract class DCRobot extends Robot {
 
 
         setMotors(new RevMotor[] {
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("LR")), true, false, true, false, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("LF")), true, false, true, false, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("RR")), true, false, true, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("RF")), true, false, true, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("LR")), false, false, true, false, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("LF")), false, false, true, false, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("RR")), false, false, true, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("RF")), false, false, true, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION(), getWheelDiameter(), 2d),
 
 
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Elev Left")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093),
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Elev Right")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093)});
 
-
+/*
         setServos(new RevServo[] {
                 new RevServo((ExpansionHubServo)(hardwareMap.get("Arm"))),
                 new RevServo((ExpansionHubServo)(hardwareMap.get("Claw")))
         });
-
+*/
 
         setRobotStateEstimator(new RobotStateEstimator(this, hardwareMap.get(BNO055IMU.class, "imu"), new Pose2d()));
         setDrive(new Drive(getRobotStateEstimator(), getMotors()[0], getMotors()[1], getMotors()[2], getMotors()[3]));

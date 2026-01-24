@@ -14,7 +14,7 @@ public class DCAgitatorStateMachine extends SimpleState<DCAgitatorStateMachine.S
 
     public enum State implements Namable {
         IDLE("Idle", 0d),
-        Ajadate("Ajadate", 0.6d);
+        AGITATE("Agitate", 0.6d);
 
         private final String name;
         private final double power;

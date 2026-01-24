@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.team.auto.DCBaseLIS;
 import org.firstinspires.ftc.teamcode.team.states.DCAgitatorStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCIntakeStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.DCShooterStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.DCServoStateMachine;
+//import org.firstinspires.ftc.teamcode.team.states.DCServoStateMachine;
 
 
 
@@ -90,7 +90,7 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
         //spins the intake to intake a pixel
         if (getEnhancedGamepad1().getRight_trigger() > 0) {
             drive.robot.getDCintakeSubsystem().getStateMachine().updateState(DCIntakeStateMachine.State.INTAKE);
-            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.Ajadate);
+            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.AGITATE);
 
         }
         if (getEnhancedGamepad1().getLeft_trigger() > 0) {
@@ -101,19 +101,21 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
         //Shooter
         //spins the intake to intake a pixel
         if (getEnhancedGamepad1().isaJustPressed()) {
+            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.AGITATE);
             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.SHOOT);
         }
         if (getEnhancedGamepad1().isbJustPressed()) {
             drive.robot.getDCShooterSubsystem().getStateMachine().updateState(DCShooterStateMachine.State.IDLE);
+            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
         }
 
         //Ajadator
-        if (getEnhancedGamepad1().isxJustPressed()) {
-            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.Ajadate);
-        }
-        if (getEnhancedGamepad1().isyJustPressed()) {
-            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
-        }
+//        if (getEnhancedGamepad1().isxJustPressed()) {
+//            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.AGITATE);
+//        }
+//        if (getEnhancedGamepad1().isyJustPressed()) {
+//            drive.robot.getDCAgitatorSubsystem().getStateMachine().updateState(DCAgitatorStateMachine.State.IDLE);
+//        }
 
 
 
@@ -147,7 +149,7 @@ public class DCTeleopLIS extends DCTeleopRobotLIS {
 //        telemetry.addData("Lift State: ", drive.robot.getDCLiftSubsystem().getStateMachine().getState());
         telemetry.addData("Agitator State: ", drive.robot.getDCAgitatorSubsystem().getStateMachine().getState());
 //        telemetry.addData("Servo State: ", drive.robot.getDCServoSubsystem().getStateMachine().getState());
-        telemetry.addData("Servo State: ", drive.robot.getDCServoSubsystem().getStateMachine().getState());
+//        telemetry.addData("Servo State: ", drive.robot.getDCServoSubsystem().getStateMachine().getState());
 
 
 

@@ -59,21 +59,21 @@ public class DCAutoRobotLIS {
 //        );
 
         setMotors(new RevMotor[] {
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), false, false, false, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION()),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("agitator")), false, false, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION()),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Shooter")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), true, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), true, false, false, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION()),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("agitator")), true, false, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION()),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Shooter")), true, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937)
         });
 
-        setServos(new RevServo[] {
-                new RevServo((ExpansionHubServo)(hardwareMap.get("Lifter"))),
-        });
+//        setServos(new RevServo[] {
+//                new RevServo((ExpansionHubServo)(hardwareMap.get("Lifter"))),
+//        });
 
         setDCLiftSubsystem(new DCLiftSubsystem(getMotors()[0]));
         setDCintakeSubsystem(new DCIntakeSubsystem(getMotors()[1]));
         setDCShooterSubsystem(new DCShooterSubsystem(getMotors()[2]));
         setDCAgitatorSubsystem(new DCAgitatorSubsystem(getMotors()[3]));
-        setDCServoSubsystem(new DCServoSubsystem(getServos()[0]));
+//        setDCServoSubsystem(new DCServoSubsystem(getServos()[0]));
         setMatchRuntime(new TimeProfiler(false));
     }
 
